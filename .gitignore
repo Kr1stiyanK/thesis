@@ -1,0 +1,37 @@
+@'
+### Gradle / Java
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+### IntelliJ / JetBrains
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### VS Code
+.vscode/
+
+### Node / Angular (на всички нива)
+**/node_modules/
+**/dist/
+**/tmp/
+**/out-tsc/
+**/bazel-out/
+**/.angular/cache
+
+### Logs
+npm-debug.log*
+yarn-error.log*
+
+### OS junk
+.DS_Store
+Thumbs.db
+
+### Optional: JetBrains HTTP client / DataSources
+httpRequests/
+dataSources/
+dataSources.local.xml
+'@ | Set-Content -Encoding UTF8 ".gitignore"

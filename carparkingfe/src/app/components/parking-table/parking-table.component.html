@@ -1,0 +1,16 @@
+<table mat-table [dataSource]="parkingSpaces" class="mat-elevation-z8">
+  <ng-container matColumnDef="space">
+    <th mat-header-cell *matHeaderCellDef> Паркомясто </th>
+    <td mat-cell *matCellDef="let element"> {{element.space}} </td>
+  </ng-container>
+
+  <ng-container *ngFor="let hour of displayedColumns.slice(1)" [matColumnDef]="hour">
+    <th mat-header-cell *matHeaderCellDef> {{hour}} </th>
+    <td mat-cell *matCellDef="let element" (click)="openBookingDialog(element, hour)">
+      {{ element.bookings && element.bookings[hour] ? 'Заето' : 'Свободно' }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

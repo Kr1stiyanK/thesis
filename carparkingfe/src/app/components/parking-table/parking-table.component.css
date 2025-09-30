@@ -1,0 +1,12 @@
+.container-fluid {
+  margin-top: 20px;
+}
+
+.nav-link.active {
+  font-weight: bold;
+}
+
+.occupied {
+  color: red;
+  font-weight: bold;
+}
