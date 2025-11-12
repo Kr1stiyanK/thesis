@@ -40,6 +40,11 @@ public class ParkingSpacesController {
         return bookingService.getBookingsBetween(from, to);
     }
 
+    @GetMapping("/free-now")
+    public long getFreeNow() {
+        return parkingSpaceService.countFreeNow();
+    }
+
     @GetMapping("/parkingspaces")
     public Iterable<ParkingSpaceEntity> getAllParkingSpaces() {
         return parkingSpaceService.getAllParkingSpaces();

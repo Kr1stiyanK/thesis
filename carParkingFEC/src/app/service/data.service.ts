@@ -139,7 +139,7 @@ export class DataService {
   }
 
   resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(BASE_URL + 'api/reset-password', {token, newPassword}, { responseType: 'text' });
+    return this.http.post(BASE_URL + 'api/reset-password', {token, newPassword}, {responseType: 'text'});
   }
 
   getMyBookings(email: string): Observable<any[]> {
@@ -165,6 +165,11 @@ export class DataService {
   getAllBookings(): Observable<any[]> {
     const headers = DataService.createAuthorizationHeader();
     return this.http.get<any[]>(BASE_URL + 'api/all-bookings', {headers});
+  }
+
+  getFreeNow(): Observable<number> {
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.get<number>(BASE_URL + 'api/free-now', {headers});
   }
 
 }

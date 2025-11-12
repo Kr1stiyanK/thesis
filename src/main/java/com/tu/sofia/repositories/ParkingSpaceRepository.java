@@ -31,4 +31,6 @@ public interface ParkingSpaceRepository extends JpaRepository<ParkingSpaceEntity
     List<ParkingSpaceEntity> findAvailableParkingSpaces(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 
 
+    @Query("SELECT ps FROM ParkingSpaceEntity ps WHERE NOT EXISTS (SELECT 1 FROM BookingDetails b WHERE b.resource = ps AND b.start <= :at AND b.end > :at)")
+    List<ParkingSpaceEntity> findFreeAt(@Param("at") LocalDateTime at);
 }

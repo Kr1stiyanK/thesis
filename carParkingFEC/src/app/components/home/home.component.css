@@ -2,3 +2,16 @@
   display: flex;
   gap: 10px;
 }
+
+.free-counter {
+  padding: 10px 16px;
+  border-radius: 8px;
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  background: #f4f6fb;
+  font-size: 16px;
+}
+.free-counter strong {
+  font-size: 20px;
+}

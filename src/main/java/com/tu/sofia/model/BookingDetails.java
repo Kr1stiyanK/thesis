@@ -22,7 +22,8 @@ public class BookingDetails {
     private LocalDateTime end;
 
     @JsonIgnore
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "resource_id")
     private ParkingSpaceEntity resource;
 
 
