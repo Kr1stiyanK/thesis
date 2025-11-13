@@ -40,10 +40,10 @@ public class ParkingSpacesController {
         return bookingService.getBookingsBetween(from, to);
     }
 
-    @GetMapping("/free-now")
-    public long getFreeNow() {
-        return parkingSpaceService.countFreeNow();
-    }
+//    @GetMapping("/free-now")
+//    public long getFreeNow() {
+//        return parkingSpaceService.countFreeNow();
+//    }
 
     @GetMapping("/parkingspaces")
     public Iterable<ParkingSpaceEntity> getAllParkingSpaces() {
@@ -62,23 +62,23 @@ public class ParkingSpacesController {
         return null;
     }
 
-    @PostMapping("/parkingspaces/edit")
-    public ResponseEntity<?> editBooking(@RequestBody BookingEditDTO params) {
-        boolean available = bookingService.isBookingAvailableWhenEdit(params.getResourceId(), params.getStart(), params.getEnd(), params.getId());
-        if (!available) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("The selected time range overlaps with another booking.");
-        }
-
-        try {
-            BookingDetails editedBooking = bookingService.editBooking(params);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Booking updated successfully.");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update booking.");
-        }
-    }
+//    @PostMapping("/parkingspaces/edit")
+//    public ResponseEntity<?> editBooking(@RequestBody BookingEditDTO params) {
+//        boolean available = bookingService.isBookingAvailableWhenEdit(params.getResourceId(), params.getStart(), params.getEnd(), params.getId());
+//        if (!available) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("The selected time range overlaps with another booking.");
+//        }
+//
+//        try {
+//            BookingDetails editedBooking = bookingService.editBooking(params);
+//            Map<String, String> response = new HashMap<>();
+//            response.put("message", "Booking updated successfully.");
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update booking.");
+//        }
+//    }
 
 
     @PostMapping("/parkingspaces/delete")
@@ -100,10 +100,10 @@ public class ParkingSpacesController {
         }
     }
 
-    @PostMapping("/parkingspaces/check-availability")
-    public ResponseEntity<?> checkAvailability(@RequestBody BookingEditAvailabilityDTO request) {
-        boolean available = bookingService.isParkingSpaceAvailable(request.getResourceId(), request.getStartTime(), request.getEndTime(), request.getBookingId());
-        return ResponseEntity.ok().body(Map.of("available", available));
-    }
+//    @PostMapping("/parkingspaces/check-availability")
+//    public ResponseEntity<?> checkAvailability(@RequestBody BookingEditAvailabilityDTO request) {
+//        boolean available = bookingService.isParkingSpaceAvailable(request.getResourceId(), request.getStartTime(), request.getEndTime(), request.getBookingId());
+//        return ResponseEntity.ok().body(Map.of("available", available));
+//    }
 
 }

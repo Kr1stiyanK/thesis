@@ -15,3 +15,76 @@
 .free-counter strong {
   font-size: 20px;
 }
+
+.home-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.parkings-list {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 25px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+.parking-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.parking-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+}
+
+.parking-card .address {
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.side-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.login-btn { /* background-color: #1976d2; color: #fff; */ }
+.register-btn { /* background-color: #2e7d32; color: #fff; */ }
+.quick-booking-btn { /* background-color: #ffa000; color: #fff; */ }
+
+/* Центрира целия блок по средата на страницата */
+.page-wrapper {
+  display: flex;
+  justify-content: center;   /* център хоризонтално */
+  padding-top: 80px;         /* леко вертикално центриране */
+  background-image: url('/assets/images/parking-bg.jpg');
+  background-size: cover;        /* запълва страницата */
+  background-position: center;   /* център на изображението */
+  background-repeat: no-repeat;  /* без повторение */
+  min-height: 100vh;
+}
+
+/* Променяме ширината, за да стои хубаво */
+.home-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 900px;              /* фиксирана ширина за хубав layout */
+}
+

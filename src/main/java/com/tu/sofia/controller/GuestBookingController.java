@@ -30,11 +30,11 @@ public class GuestBookingController {
     }
 
 
-    @PostMapping("/check-availability")
-    public ResponseEntity<?> checkAvailability(@RequestBody BookingAvailabilityDTO request) {
-        boolean available = parkingSpaceBookingService.isParkingSpaceAvailable(request.getStartTime(), request.getEndTime());
-        return ResponseEntity.ok().body(Map.of("available", available));
-    }
+//    @PostMapping("/check-availability")
+//    public ResponseEntity<?> checkAvailability(@RequestBody BookingAvailabilityDTO request) {
+//        boolean available = parkingSpaceBookingService.isParkingSpaceAvailable(request.getStartTime(), request.getEndTime());
+//        return ResponseEntity.ok().body(Map.of("available", available));
+//    }
 
     @PostMapping("/quick-booking")
     public ResponseEntity<?> quickBooking(@RequestBody QuickBookingDTO request) {

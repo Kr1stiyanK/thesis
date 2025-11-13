@@ -4,6 +4,7 @@ import {DayPilot} from 'daypilot-pro-angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {catchError} from "rxjs/operators";
 import {Router} from "@angular/router";
+import {ParkingHome} from "../components/home/home.component";
 
 const BASE_URL = 'http://localhost:8081/';
 
@@ -172,6 +173,20 @@ export class DataService {
     return this.http.get<number>(BASE_URL + 'api/free-now', {headers});
   }
 
+  getParkingsForHome(): Observable<ParkingHome[]>{
+  const headers = new HttpHeaders({'Content-Type': 'application/json'});
+  return this.http.get<ParkingHome[]>(BASE_URL + 'api/parkings', {headers});
+  }
+
+  getMyParkings(): Observable<ParkingAdmin[]>{
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.get<ParkingAdmin[]>(BASE_URL + 'api/admin/parkings/my', {headers});
+  }
+  createParking(req: CreateParkingRequest): Observable<ParkingAdmin> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.post<ParkingAdmin>(BASE_URL + 'api/admin/parkings', req, {headers});
+  }
+
 }
 
 export interface EventCreateParams {
@@ -215,5 +230,32 @@ export interface CheckAvailabilityParams {
   startTime: string;
   endTime: string;
   bookingId: number | null;
+}
+
+export interface ParkingAdmin{
+  id: number;
+  name: string;
+  address: string;
+  spacesCount: number;
+  pricePerHourBgn: number;
+  cardPaymentEnabled: boolean;
+  loyaltyEnabled: boolean;
+  loyaltyVisitPerPoint?: number;
+  loyaltyPointsRequired?: number;
+  loyaltyRewardHours?: 'ONE_HOUR' | 'THREE_HOURS' | 'SIX_HOURS' | 'EIGHT_HOURS';
+  mapImageUrl?: string;
+}
+
+export interface CreateParkingRequest {
+  name: string;
+  address: string;
+  spacesCount: number;
+  pricePerHourBgn: number;
+  cardPaymentEnabled: boolean;
+  loyaltyEnabled: boolean;
+  loyaltyVisitPerPoint?: number;
+  loyaltyPointsRequired?: number;
+  loyaltyRewardHours?: 'ONE_HOUR' | 'THREE_HOURS' | 'SIX_HOURS' | 'EIGHT_HOURS';
+  mapImageUrl?: string;
 }
 

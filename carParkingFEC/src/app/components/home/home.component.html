@@ -1,20 +1,48 @@
-<div class="container">
-  <h1>ParkWise</h1>
-  <div class="buttons">
-    <button [routerLink]="['/login']">Login</button>
-    <button [routerLink]="['/register']">Register</button>
-    <button [routerLink]="['/quick-booking']">Quick Booking</button>
-  </div>
-  <div class="free-counter" *ngIf="freeNow !== null; else loading">
-    <span>Свободни места в момента:</span>
-    <strong>{{ freeNow }} / {{ totalSpots }}</strong>
-  </div>
+<!--<div class="container">-->
+<!--  <h1>ParkWise</h1>-->
+<!--  <div class="buttons">-->
+<!--    <button [routerLink]="['/login']">Login</button>-->
+<!--    <button [routerLink]="['/register']">Register</button>-->
+<!--    <button [routerLink]="['/quick-booking']">Quick Booking</button>-->
+<!--  </div>-->
+<!--  <div class="free-counter" *ngIf="freeNow !== null; else loading">-->
+<!--    <span>Свободни места в момента:</span>-->
+<!--    <strong>{{ freeNow }} / {{ totalSpots }}</strong>-->
+<!--  </div>-->
 
-  <ng-template #loading>
-    <div class="free-counter">
-      Зареждане на свободните места...
+<!--  <ng-template #loading>-->
+<!--    <div class="free-counter">-->
+<!--      Зареждане на свободните места...-->
+<!--    </div>-->
+<!--  </ng-template>-->
+
+<!--</div>-->
+<!--<router-outlet></router-outlet>-->
+<div class="page-wrapper">
+  <div class="home-container">
+
+    <!-- твоят съществуващ код остава 1:1 -->
+    <div class="parkings-list">
+      <h2>Налични паркинги</h2>
+
+      <div *ngIf="parkings.length === 0">
+        Няма налични паркинги.
+      </div>
+
+      <div class="parking-card" *ngFor="let p of parkings">
+        <h3>{{ p.name }}</h3>
+        <p class="address">{{ p.address }}</p>
+        <p>Свободни места сега: <strong>{{ p.freeSpaces }}</strong></p>
+        <p>Цена на час: <strong>{{ p.pricePerHourBgn | number:'1.2-2' }} лв.</strong></p>
+      </div>
     </div>
-  </ng-template>
 
+    <div class="side-actions">
+      <button class="action-btn login-btn" [routerLink]="['/login']">Login</button>
+      <button class="action-btn register-btn" [routerLink]="['/register']">Register</button>
+      <button class="action-btn quick-booking-btn" [routerLink]="['/quick-booking']">Quick booking</button>
+    </div>
+
+  </div>
 </div>
-<router-outlet></router-outlet>
+

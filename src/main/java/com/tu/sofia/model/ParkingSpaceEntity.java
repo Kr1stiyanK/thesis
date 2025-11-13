@@ -12,6 +12,10 @@ public class ParkingSpaceEntity {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "parking_id", nullable = false)
+    private ParkingEntity parking;
+
 
     public Long getId() {
         return id;

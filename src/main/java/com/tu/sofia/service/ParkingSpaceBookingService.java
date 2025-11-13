@@ -57,7 +57,7 @@ public class ParkingSpaceBookingService {
                 .setText(booking.getText())
                 .setStart(booking.getStart())
                 .setEnd(booking.getEnd().plusHours(1))
-                .setResource(booking.getResource())
+//                .setResource(booking.getResource())
                 .setUserId(booking.getUserId());
         return adjustedBooking;
     }
@@ -76,14 +76,14 @@ public class ParkingSpaceBookingService {
         BookingDetails booking = new BookingDetails()
                 .setUserId(currentUser.getId())
                 .setStart(start)
-                .setEnd(end)
-                .setResource(parkingSpaceEntity);
+                .setEnd(end);
+//                .setResource(parkingSpaceEntity);
 
         BookingDetails booking2 = new BookingDetails()
                 .setUserId(currentUser.getId())
                 .setStart(start)
-                .setEnd(end.plusHours(1))
-                .setResource(parkingSpaceEntity);
+                .setEnd(end.plusHours(1));
+//                .setResource(parkingSpaceEntity);
 
         OrderEntity order = new OrderEntity()
                 .setUser(currentUser)
@@ -110,10 +110,10 @@ public class ParkingSpaceBookingService {
     public BookingDetails moveBooking(BookingMoveDTO params) {
         logger.info("Moving booking with params: {}", params);
 
-        if (!isMoveBookingAvailable(params.getResourceId(), params.getStartTime(), params.getEndTime(), params.getBookingId())) {
-            logger.warn("The new time overlaps with an existing booking.");
-            throw new IllegalArgumentException("The new time overlaps with an existing booking.");
-        }
+//        if (!isMoveBookingAvailable(params.getResourceId(), params.getStartTime(), params.getEndTime(), params.getBookingId())) {
+//            logger.warn("The new time overlaps with an existing booking.");
+//            throw new IllegalArgumentException("The new time overlaps with an existing booking.");
+//        }
 
         BookingDetails booking = spaceBookingRepository.findById(params.getBookingId()).orElseThrow(() -> {
             logger.error("Booking with id {} not found", params.getBookingId());
@@ -125,16 +125,16 @@ public class ParkingSpaceBookingService {
             return new IllegalArgumentException("Parking space not found");
         });
         booking.setStart(params.getStartTime())
-                .setEnd(params.getEndTime().minusHours(1))
-                .setResource(parkingSpaceEntity);
+                .setEnd(params.getEndTime().minusHours(1));
+//                .setResource(parkingSpaceEntity);
 
         this.spaceBookingRepository.save(booking);
         logger.info("Booking moved successfully: {}", booking);
 
         return new BookingDetails()
                 .setStart(params.getStartTime())
-                .setEnd(params.getEndTime().plusHours(1))
-                .setResource(parkingSpaceEntity);
+                .setEnd(params.getEndTime().plusHours(1));
+//                .setResource(parkingSpaceEntity);
     }
 
     public List<BookingFetchDTO> getBookingsByEmail(String email) {
@@ -153,33 +153,33 @@ public class ParkingSpaceBookingService {
                 .setAmount(order.getAmount());
     }
 
-    public boolean isParkingSpaceAvailable(LocalDateTime startTime, LocalDateTime endTime) {
-        List<ParkingSpaceEntity> availableParkingSpaceEntities = this.parkingSpaceRepository.findAvailableParkingSpaces(startTime, endTime);
-        return !availableParkingSpaceEntities.isEmpty();
-    }
+//    public boolean isParkingSpaceAvailable(LocalDateTime startTime, LocalDateTime endTime) {
+//        List<ParkingSpaceEntity> availableParkingSpaceEntities = this.parkingSpaceRepository.findAvailableParkingSpaces(startTime, endTime);
+//        return !availableParkingSpaceEntities.isEmpty();
+//    }
 
-    public boolean isBookingAvailableWhenEdit(Long resourceId, LocalDateTime startTime, LocalDateTime endTime, Long bookingId) {
-        List<BookingDetails> bookings = spaceBookingRepository.findByResourceId(resourceId);
-        for (BookingDetails booking : bookings) {
-            if (!booking.getId().equals(bookingId) && booking.getStart().isBefore(endTime) && booking.getEnd().isAfter(startTime)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    public boolean isBookingAvailableWhenEdit(Long resourceId, LocalDateTime startTime, LocalDateTime endTime, Long bookingId) {
+//        List<BookingDetails> bookings = spaceBookingRepository.findByResourceId(resourceId);
+//        for (BookingDetails booking : bookings) {
+//            if (!booking.getId().equals(bookingId) && booking.getStart().isBefore(endTime) && booking.getEnd().isAfter(startTime)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
-    public boolean isParkingSpaceAvailable(Long resourceId, LocalDateTime startTime, LocalDateTime endTime, Long bookingId) {
-        List<BookingDetails> conflictingBookings = spaceBookingRepository.findConflictingBookings(resourceId, startTime, endTime, bookingId);
-        return conflictingBookings.isEmpty();
-    }
+//    public boolean isParkingSpaceAvailable(Long resourceId, LocalDateTime startTime, LocalDateTime endTime, Long bookingId) {
+//        List<BookingDetails> conflictingBookings = spaceBookingRepository.findConflictingBookings(resourceId, startTime, endTime, bookingId);
+//        return conflictingBookings.isEmpty();
+//    }
 
     public OrderEntity createQuickBooking(QuickBookingDTO request) {
-        List<ParkingSpaceEntity> availableSpaces = parkingSpaceRepository.findAvailableParkingSpaces(request.getStartTime(), request.getEndTime());
-        if (availableSpaces.isEmpty()) {
+//        List<ParkingSpaceEntity> availableSpaces = parkingSpaceRepository.findAvailableParkingSpaces(request.getStartTime(), request.getEndTime());
+        if (true) {
             throw new RuntimeException("No available parking space for the selected time.");
         }
 
-        ParkingSpaceEntity availableSpace = availableSpaces.get(0);
+//        ParkingSpaceEntity availableSpace = availableSpaces.get(0);
         Optional<UserEntity> guestUser = userEntityRepository.findByName("guest");
 
         if (guestUser.isEmpty()) {
@@ -189,7 +189,7 @@ public class ParkingSpaceBookingService {
         BookingDetails bookingDetails = new BookingDetails()
                 .setStart(request.getStartTime())
                 .setEnd(request.getEndTime())
-                .setResource(availableSpace)
+//                .setResource(availableSpace)
                 .setText("Guest booking")
                 .setUserId(guestUser.get().getId());
 
@@ -204,12 +204,12 @@ public class ParkingSpaceBookingService {
         return order;
     }
 
-    public boolean isMoveBookingAvailable(Long resourceId, LocalDateTime startTime, LocalDateTime endTime, Long bookingId) {
-        boolean exists = spaceBookingRepository.existsByResourceIdAndStartLessThanAndEndGreaterThanAndIdNot(resourceId, endTime, startTime, bookingId);
-        logger.info("Checking availability for resourceId: {}, startTime: {}, endTime: {}, bookingId: {}", resourceId, startTime, endTime, bookingId);
-        logger.info("Exists overlapping booking: {}", exists);
-        return !exists;
-    }
+//    public boolean isMoveBookingAvailable(Long resourceId, LocalDateTime startTime, LocalDateTime endTime, Long bookingId) {
+//        boolean exists = spaceBookingRepository.existsByResourceIdAndStartLessThanAndEndGreaterThanAndIdNot(resourceId, endTime, startTime, bookingId);
+//        logger.info("Checking availability for resourceId: {}, startTime: {}, endTime: {}, bookingId: {}", resourceId, startTime, endTime, bookingId);
+//        logger.info("Exists overlapping booking: {}", exists);
+//        return !exists;
+//    }
 
     public BookingDetails editBooking(BookingEditDTO bookingEditDTO) {
         BookingDetails booking = this.spaceBookingRepository.findById(bookingEditDTO.getId())
@@ -224,17 +224,17 @@ public class ParkingSpaceBookingService {
         LocalDateTime newStart = bookingEditDTO.getStart();
         LocalDateTime newEnd = bookingEditDTO.getEnd();
 
-        boolean overlaps = this.spaceBookingRepository.existsByResourceAndStartLessThanAndEndGreaterThanAndIdNot(parkingSpaceEntity, newEnd, newStart, booking.getId());
-        if (overlaps) {
-            throw new IllegalArgumentException("The selected time range overlaps with another booking.");
-        }
+//        boolean overlaps = this.spaceBookingRepository.existsByResourceAndStartLessThanAndEndGreaterThanAndIdNot(parkingSpaceEntity, newEnd, newStart, booking.getId());
+//        if (overlaps) {
+//            throw new IllegalArgumentException("The selected time range overlaps with another booking.");
+//        }
 
         orderForBooking.setAmount(bookingEditDTO.getAmount());
         this.orderEntityRepository.save(orderForBooking);
 
         booking.setStart(newStart);
         booking.setEnd(newEnd);
-        booking.setResource(parkingSpaceEntity);
+//        booking.setResource(parkingSpaceEntity);
 
         return this.spaceBookingRepository.save(booking);
     }

@@ -15,16 +15,20 @@ public class BookingDetails {
 
     private String text;
 
+    @ManyToOne
+    @JoinColumn(name = "parking_id", nullable = false)
+    private ParkingEntity parking;
+
     @Column(name = "book_start")
     private LocalDateTime start;
 
     @Column(name = "book_end")
     private LocalDateTime end;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "resource_id")
-    private ParkingSpaceEntity resource;
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name = "resource_id")
+//    private ParkingSpaceEntity resource;
 
 
     @Column(name = "user_id")
@@ -34,10 +38,10 @@ public class BookingDetails {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "bookingDetails", orphanRemoval = true)
     private OrderEntity order;
 
-    @JsonProperty("resource")
-    public Long getParkingSpaceId() {
-        return resource.getId();
-    }
+//    @JsonProperty("resource")
+//    public Long getParkingSpaceId() {
+//        return resource.getId();
+//    }
 
     public String getText() {
         return text;
@@ -84,14 +88,14 @@ public class BookingDetails {
         return this;
     }
 
-    public ParkingSpaceEntity getResource() {
-        return resource;
-    }
-
-    public BookingDetails setResource(ParkingSpaceEntity parkingSpaceEntity) {
-        this.resource = parkingSpaceEntity;
-        return this;
-    }
+//    public ParkingSpaceEntity getResource() {
+//        return resource;
+//    }
+//
+//    public BookingDetails setResource(ParkingSpaceEntity parkingSpaceEntity) {
+//        this.resource = parkingSpaceEntity;
+//        return this;
+//    }
 
     public OrderEntity getOrder() {
         return order;

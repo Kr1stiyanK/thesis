@@ -15,14 +15,14 @@ public interface ParkingSpaceBookingRepository extends JpaRepository<BookingDeta
 
     List<BookingDetails> findByStartBetween(LocalDateTime from, LocalDateTime to);
 
-    boolean existsByResourceAndStartLessThanAndEndGreaterThanAndIdNot(ParkingSpaceEntity resource, LocalDateTime end, LocalDateTime start, Long id);
+//    boolean existsByResourceAndStartLessThanAndEndGreaterThanAndIdNot(ParkingSpaceEntity resource, LocalDateTime end, LocalDateTime start, Long id);
 
 
-    boolean existsByResourceIdAndStartLessThanAndEndGreaterThanAndIdNot(Long resourceId, LocalDateTime endTime, LocalDateTime startTime, Long bookingId);
+//    boolean existsByResourceIdAndStartLessThanAndEndGreaterThanAndIdNot(Long resourceId, LocalDateTime endTime, LocalDateTime startTime, Long bookingId);
 
-    List<BookingDetails> findByResourceId(Long resourceId);
+//    List<BookingDetails> findByResourceId(Long resourceId);
 
-    @Query("SELECT b FROM BookingDetails b WHERE b.resource.id = :resourceId AND b.id != :bookingId AND ((b.start < :endTime AND b.end > :startTime) OR (b.start = :endTime OR b.end = :startTime))")
-    List<BookingDetails> findConflictingBookings(@Param("resourceId") Long resourceId, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, @Param("bookingId") Long bookingId);
+//    @Query("SELECT b FROM BookingDetails b WHERE b.resource.id = :resourceId AND b.id != :bookingId AND ((b.start < :endTime AND b.end > :startTime) OR (b.start = :endTime OR b.end = :startTime))")
+//    List<BookingDetails> findConflictingBookings(@Param("resourceId") Long resourceId, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, @Param("bookingId") Long bookingId);
 
 }

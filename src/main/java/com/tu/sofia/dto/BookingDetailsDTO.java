@@ -18,7 +18,7 @@ public class BookingDetailsDTO {
         this.text = bookingDetails.getText();
         this.start = bookingDetails.getStart();
         this.end = bookingDetails.getEnd();
-        this.resourceId = bookingDetails.getParkingSpaceId();
+        this.resourceId = 10L;
         this.userId = bookingDetails.getUserId();
     }
 

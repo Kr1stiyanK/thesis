@@ -20,11 +20,11 @@ public class ParkingSpaceService {
         return parkingSpaceRepository.findAll();
     }
 
-    public List<ParkingSpaceEntity> getFreeNow() {
-        return parkingSpaceRepository.findFreeAt(LocalDateTime.now());
-    }
+//    public List<ParkingSpaceEntity> getFreeNow() {
+//        return parkingSpaceRepository.findFreeAt(LocalDateTime.now());
+//    }
 
-    public long countFreeNow() {
-        return getFreeNow().size();
-    }
+//    public long countFreeNow() {
+//        return getFreeNow().size();
+//    }
 }
