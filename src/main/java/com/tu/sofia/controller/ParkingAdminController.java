@@ -1,6 +1,6 @@
 package com.tu.sofia.controller;
 
-import com.tu.sofia.dto.ParkingCreateRequestDTO;
+import com.tu.sofia.dto.ParkingRequestDTO;
 import com.tu.sofia.model.ParkingEntity;
 import com.tu.sofia.model.UserEntity;
 import com.tu.sofia.repositories.UserEntityRepository;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/api/admin/parkings")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ParkingAdminController {
@@ -25,20 +26,43 @@ public class ParkingAdminController {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/my")
     public List<ParkingEntity> getMyParkings(@AuthenticationPrincipal UserDetails principal) {
-        UserEntity user = userRepository.findByEmail(principal.getUsername())
-                .orElseThrow();
-        return parkingService.getParkingsByOwnerId(user.getId());
+        Long ownerId = getUserId(principal);
+        return parkingService.getParkingsByOwnerId(ownerId);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @PostMapping
     public ParkingEntity createParking(@AuthenticationPrincipal UserDetails principal,
-                                       @RequestBody ParkingCreateRequestDTO request) {
-        UserEntity user = userRepository.findByEmail(principal.getUsername())
-                .orElseThrow();
-        return parkingService.createParking(user.getId(), request);
+                                       @RequestBody ParkingRequestDTO requestDTO) {
+        Long ownerId = getUserId(principal);
+        return parkingService.createParking(ownerId, requestDTO);
     }
+
+    @PutMapping("/{id}")
+    public ParkingEntity updateParking(@AuthenticationPrincipal UserDetails principal,
+                                       @PathVariable("id") Long parkingId,
+                                       @RequestBody ParkingRequestDTO requestDTO) {
+        Long ownerId = getUserId(principal);
+
+        return parkingService.updateParking(ownerId, parkingId, requestDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteParking(@AuthenticationPrincipal UserDetails principal,
+                              @PathVariable("id") Long parkingId) {
+
+        Long ownerId = getUserId(principal);
+
+        parkingService.deleteParking(ownerId, parkingId);
+    }
+
+
+    private Long getUserId(@AuthenticationPrincipal UserDetails principal) {
+        return userRepository.findByEmail(principal.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId();
+    }
+
 }

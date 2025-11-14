@@ -1,0 +1,134 @@
+.page-container {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 20px;
+  font-family: Arial, sans-serif;
+}
+
+.page-title {
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.empty-state {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.parking-card {
+  background: white;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.parking-card h3 {
+  margin-top: 0;
+}
+
+.address {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.details {
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #1976d2;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.save-btn {
+  margin-top: 20px;
+  background-color: #2e7d32;
+  color: white;
+  padding: 10px 20px;
+}
+
+.cancel-btn {
+  background-color: #777;
+  color: white;
+  margin-left: 10px;
+}
+.cancel-btn:hover {
+  background-color: #5c5c5c;
+}
+
+
+.form-card {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-field {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.map-image-wrapper {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.map-image {
+  max-width: 100%;
+  max-height: 160px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+

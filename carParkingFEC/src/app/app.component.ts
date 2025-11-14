@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {CommonModule} from "@angular/common";
 import {HomeComponent} from "./components/home/home.component";
 import {HttpClientModule} from "@angular/common/http";
@@ -18,6 +18,8 @@ import {AllbookingsComponent} from "./components/allbookings/allbookings.compone
 import {AllprofilesComponent} from "./components/allprofiles/allprofiles.component";
 import {ForgotpasswordComponent} from "./components/forgotpassword/forgotpassword.component";
 import {ResetpasswordComponent} from "./components/resetpassword/resetpassword.component";
+import {DataService} from "./service/data.service";
+import {filter} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -31,6 +33,61 @@ import {ResetpasswordComponent} from "./components/resetpassword/resetpassword.c
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  showNavbar = false;
+  isAdmin = false;
+
+  private hideNavBarOn: string[] = [
+    '/',
+    '',
+    '/login',
+    '/register',
+    '/quick-booking',
+    '/booking-success',
+    '/forgot-password',
+    '/reset-password'
+  ]
+
+  constructor(private router: Router, private dataService: DataService) {
+  }
+
+  ngOnInit(): void {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        const url = event.urlAfterRedirects || event.url;
+        this.showNavbar = this.shouldShowNavbar(url);
+        if (this.dataService.isLoggedIn()) {
+          this.loadUserRole();
+        } else {
+          this.isAdmin = false;
+        }
+      });
+  }
+
+  logout(): void {
+    this.dataService.logout();
+    this.router.navigate(['/home']);
+  }
+
+  private shouldShowNavbar(url: string): boolean {
+    if (this.hideNavBarOn.includes(url)) {
+      return false;
+    }
+    return this.dataService.isLoggedIn();
+  }
+
+  private loadUserRole(): void {
+    this.dataService.getUserRole().subscribe({
+      next: res => {
+        this.isAdmin = res.role === 'ADMIN';
+      },
+      error: () => {
+        this.isAdmin = false;
+      }
+    });
+  }
+
   title = 'ParkWise';
 }

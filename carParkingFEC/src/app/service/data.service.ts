@@ -104,21 +104,21 @@ export class DataService {
   logout() {
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('expires_at');
-    this.deleteCookie('JSESSIONID');
-    this.deleteCookie('jwtToken');
+    // this.deleteCookie('JSESSIONID');
+    // this.deleteCookie('jwtToken');
 
-    this.http.post(BASE_URL + 'api/logout', {})
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/login']);
-        }
-      });
+    // this.http.post(BASE_URL + 'logout', {})
+    //   .subscribe({
+    //     next: () => {
+          this.router.navigate(['/home']);
+      //   }
+      // });
   }
 
 
-  deleteCookie(name: string) {
-    document.cookie = `${name}=; Path=/; Max-Age=0;`;
-  }
+  // deleteCookie(name: string) {
+  //   document.cookie = `${name}=; Path=/; Max-Age=0;`;
+  // }
 
   changeEmail(updateEmailRequest: any): Observable<any> {
     const headers = DataService.createAuthorizationHeader();
@@ -185,6 +185,16 @@ export class DataService {
   createParking(req: CreateParkingRequest): Observable<ParkingAdmin> {
     const headers = DataService.createAuthorizationHeader();
     return this.http.post<ParkingAdmin>(BASE_URL + 'api/admin/parkings', req, {headers});
+  }
+
+  updateParking(id: number, req: CreateParkingRequest): Observable<ParkingAdmin> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.put<ParkingAdmin>(BASE_URL + 'api/admin/parkings/' + id, req, { headers });
+  }
+
+  deleteParking(id: number): Observable<void> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.delete<void>(BASE_URL + 'api/admin/parkings/' + id, { headers });
   }
 
 }

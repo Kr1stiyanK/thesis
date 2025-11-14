@@ -40,10 +40,10 @@ public class AppInitializer implements CommandLineRunner {
 
 //        UserRoleEntity adminRole = roleRepo.findByRole(UserRoleEnum.ADMIN);
 //        UserEntity admin = new UserEntity()
-//                .setId(1L)
-//                .setEmail("admin@mail.com")
-//                .setName("admin")
-//                .setPassword(passwordEncoder.encode("admin"))
+//                .setId(4L)
+//                .setEmail("admin2@mail.com")
+//                .setName("admin2")
+//                .setPassword(passwordEncoder.encode("admin2"))
 //                .setRole(adminRole);
 //        this.userRepo.save(admin);
 //

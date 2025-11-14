@@ -4,7 +4,7 @@ import com.tu.sofia.enums.LoyaltyRewardHours;
 
 import java.math.BigDecimal;
 
-public class ParkingCreateRequestDTO {
+public class ParkingRequestDTO {
     private String name;
     private String address;
     private Integer spacesCount;
@@ -20,7 +20,7 @@ public class ParkingCreateRequestDTO {
         return name;
     }
 
-    public ParkingCreateRequestDTO setName(String name) {
+    public ParkingRequestDTO setName(String name) {
         this.name = name;
         return this;
     }
@@ -29,7 +29,7 @@ public class ParkingCreateRequestDTO {
         return address;
     }
 
-    public ParkingCreateRequestDTO setAddress(String address) {
+    public ParkingRequestDTO setAddress(String address) {
         this.address = address;
         return this;
     }
@@ -38,7 +38,7 @@ public class ParkingCreateRequestDTO {
         return spacesCount;
     }
 
-    public ParkingCreateRequestDTO setSpacesCount(Integer spacesCount) {
+    public ParkingRequestDTO setSpacesCount(Integer spacesCount) {
         this.spacesCount = spacesCount;
         return this;
     }
@@ -47,7 +47,7 @@ public class ParkingCreateRequestDTO {
         return pricePerHourBgn;
     }
 
-    public ParkingCreateRequestDTO setPricePerHourBgn(BigDecimal pricePerHourBgn) {
+    public ParkingRequestDTO setPricePerHourBgn(BigDecimal pricePerHourBgn) {
         this.pricePerHourBgn = pricePerHourBgn;
         return this;
     }
@@ -56,7 +56,7 @@ public class ParkingCreateRequestDTO {
         return cardPaymentEnabled;
     }
 
-    public ParkingCreateRequestDTO setCardPaymentEnabled(Boolean cardPaymentEnabled) {
+    public ParkingRequestDTO setCardPaymentEnabled(Boolean cardPaymentEnabled) {
         this.cardPaymentEnabled = cardPaymentEnabled;
         return this;
     }
@@ -65,7 +65,7 @@ public class ParkingCreateRequestDTO {
         return loyaltyEnabled;
     }
 
-    public ParkingCreateRequestDTO setLoyaltyEnabled(Boolean loyaltyEnabled) {
+    public ParkingRequestDTO setLoyaltyEnabled(Boolean loyaltyEnabled) {
         this.loyaltyEnabled = loyaltyEnabled;
         return this;
     }
@@ -74,7 +74,7 @@ public class ParkingCreateRequestDTO {
         return loyaltyVisitPerPoint;
     }
 
-    public ParkingCreateRequestDTO setLoyaltyVisitPerPoint(Integer loyaltyVisitPerPoint) {
+    public ParkingRequestDTO setLoyaltyVisitPerPoint(Integer loyaltyVisitPerPoint) {
         this.loyaltyVisitPerPoint = loyaltyVisitPerPoint;
         return this;
     }
@@ -83,7 +83,7 @@ public class ParkingCreateRequestDTO {
         return loyaltyPointsRequired;
     }
 
-    public ParkingCreateRequestDTO setLoyaltyPointsRequired(Integer loyaltyPointsRequired) {
+    public ParkingRequestDTO setLoyaltyPointsRequired(Integer loyaltyPointsRequired) {
         this.loyaltyPointsRequired = loyaltyPointsRequired;
         return this;
     }
@@ -92,7 +92,7 @@ public class ParkingCreateRequestDTO {
         return loyaltyRewardHours;
     }
 
-    public ParkingCreateRequestDTO setLoyaltyRewardHours(LoyaltyRewardHours loyaltyRewardHours) {
+    public ParkingRequestDTO setLoyaltyRewardHours(LoyaltyRewardHours loyaltyRewardHours) {
         this.loyaltyRewardHours = loyaltyRewardHours;
         return this;
     }
@@ -101,7 +101,7 @@ public class ParkingCreateRequestDTO {
         return mapImageUrl;
     }
 
-    public ParkingCreateRequestDTO setMapImageUrl(String mapImageUrl) {
+    public ParkingRequestDTO setMapImageUrl(String mapImageUrl) {
         this.mapImageUrl = mapImageUrl;
         return this;
     }

@@ -37,8 +37,7 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
         security
                 .csrf().disable()
-                .authorizeHttpRequests().requestMatchers("/register", "/login", "/api/free-now").permitAll().and()
-//                        "/api/guest/check-availability","/api/guest/quick-booking",
+                .authorizeHttpRequests().requestMatchers("/register", "/login","/api/guest/check-availability","/api/guest/quick-booking", "/api/free-now","/api/parkings","/api/logout").permitAll().and()
                 .authorizeHttpRequests().requestMatchers("/api/guest/**").permitAll().and()
                 .authorizeHttpRequests().requestMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()

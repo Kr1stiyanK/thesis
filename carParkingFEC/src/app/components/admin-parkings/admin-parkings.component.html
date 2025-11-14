@@ -1,0 +1,137 @@
+<div class="page-container">
+
+  <h1 class="page-title">Моите паркинги</h1>
+
+  <!-- LIST SECTION -->
+  <section class="section">
+    <h2 class="section-title">Списък</h2>
+
+    <div *ngIf="parkings.length === 0" class="empty-state">
+      Нямате създадени паркинги.
+    </div>
+
+    <div class="cards">
+      <div class="parking-card" *ngFor="let p of parkings">
+        <h3>{{ p.name }}</h3>
+        <p class="address">{{ p.address }}</p>
+        <div class="map-image-wrapper" *ngIf="p.mapImageUrl">
+          <img [src]="p.mapImageUrl"
+               alt="Карта на паркинга"
+               class="map-image"
+               (error)="p.mapImageUrl = ''">
+        </div>
+
+        <div class="details">
+          <span>Места: <strong>{{ p.spacesCount }}</strong></span>
+          <span>Цена за час: <strong>{{ p.pricePerHourBgn }} лв.
+      / {{ priceInEur(p.pricePerHourBgn) | number:'1.2-2' }} €</strong></span>
+          <span>Плащане с карта: <strong>{{ p.cardPaymentEnabled ? 'Да' : 'Не' }}</strong></span>
+          <span>Лоялна програма: <strong>{{ p.loyaltyEnabled ? 'Да' : 'Не' }}</strong></span>
+
+          <ng-container *ngIf="p.loyaltyEnabled">
+    <span>
+      Посещения за 1 точка:
+      <strong>{{ p.loyaltyVisitPerPoint || '-' }}</strong>
+    </span>
+            <span>
+      Необходими точки:
+      <strong>{{ p.loyaltyPointsRequired || '-' }}</strong>
+    </span>
+            <span>
+      Награда:
+      <strong>
+        {{
+          p.loyaltyRewardHours === 'ONE_HOUR' ? '1 час' :
+            p.loyaltyRewardHours === 'THREE_HOURS' ? '3 часа' :
+              p.loyaltyRewardHours === 'SIX_HOURS' ? '6 часа' :
+                p.loyaltyRewardHours === 'EIGHT_HOURS' ? '8 часа' : '-'
+        }}
+      </strong>
+    </span>
+          </ng-container>
+        </div>
+
+        <div class="actions">
+          <button class="btn edit-btn" (click)="startEdit(p)">Редактирай</button>
+          <button class="btn delete-btn" (click)="deleteParking(p.id)">Изтрий</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATE SECTION -->
+  <section class="section">
+    <h2 class="section-title">Нов паркинг</h2>
+
+    <form [formGroup]="parkingForm" (ngSubmit)="saveParking()" class="form-card">
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Име</label>
+          <input formControlName="name" type="text" />
+        </div>
+
+        <div class="form-field">
+          <label>Адрес</label>
+          <input formControlName="address" type="text" />
+        </div>
+
+        <div class="form-field">
+          <label>Брой паркоместа</label>
+          <input formControlName="spacesCount" type="number" min="0" />
+        </div>
+
+        <div class="form-field">
+          <label>Цена на час (лв)</label>
+          <input formControlName="pricePerHourBgn" type="number" step="0.50" min="0" />
+        </div>
+
+        <div class="form-field checkbox-field">
+          <label>Плащане с карта</label>
+          <input formControlName="cardPaymentEnabled" type="checkbox" />
+        </div>
+
+        <div class="form-field checkbox-field">
+          <label>Лоялна програма</label>
+          <input formControlName="loyaltyEnabled" type="checkbox" />
+        </div>
+
+        <div class="form-field">
+          <label>URL към карта/снимка (по желание)</label>
+          <input formControlName="mapImageUrl" type="text" />
+        </div>
+
+        <div class="form-grid" *ngIf="parkingForm.get('loyaltyEnabled')?.value">
+          <div class="form-field">
+            <label>Посещения за 1 бонус точка</label>
+            <input formControlName="loyaltyVisitPerPoint" type="number" min="1" />
+          </div>
+
+          <div class="form-field">
+            <label>Необходими точки за награда</label>
+            <input formControlName="loyaltyPointsRequired" type="number" min="1" />
+          </div>
+
+          <div class="form-field">
+            <label>Бонус (безплатни часове)</label>
+            <select formControlName="loyaltyRewardHours">
+              <option [ngValue]="null">-- избери --</option>
+              <option value="ONE_HOUR">1 час</option>
+              <option value="THREE_HOURS">3 часа</option>
+              <option value="SIX_HOURS">6 часа</option>
+              <option value="EIGHT_HOURS">8 часа</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn save-btn">Запази</button>
+      <button *ngIf="editing" type="button" class="btn cancel-btn" (click)="cancelEdit()">
+        Отказ
+      </button>
+
+    </form>
+  </section>
+
+</div>
