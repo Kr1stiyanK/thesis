@@ -242,10 +242,11 @@ export interface CheckAvailabilityParams {
   bookingId: number | null;
 }
 
-export interface ParkingAdmin{
+export interface ParkingAdmin {
   id: number;
   name: string;
   address: string;
+  city: string;
   spacesCount: number;
   pricePerHourBgn: number;
   cardPaymentEnabled: boolean;
@@ -254,11 +255,16 @@ export interface ParkingAdmin{
   loyaltyPointsRequired?: number;
   loyaltyRewardHours?: 'ONE_HOUR' | 'THREE_HOURS' | 'SIX_HOURS' | 'EIGHT_HOURS';
   mapImageUrl?: string;
+  open24Hours: boolean;
+  openingTime?: string;
+  closingTime?: string;
+  contactPhone?: string;
 }
 
 export interface CreateParkingRequest {
   name: string;
   address: string;
+  city: string;
   spacesCount: number;
   pricePerHourBgn: number;
   cardPaymentEnabled: boolean;
@@ -267,5 +273,9 @@ export interface CreateParkingRequest {
   loyaltyPointsRequired?: number;
   loyaltyRewardHours?: 'ONE_HOUR' | 'THREE_HOURS' | 'SIX_HOURS' | 'EIGHT_HOURS';
   mapImageUrl?: string;
+  open24Hours: boolean;
+  openingTime?: string;
+  closingTime?: string;
+  contactPhone?: string;
 }
 

@@ -18,8 +18,106 @@
 
 .home-container {
   display: flex;
-  align-items: flex-start;
-  gap: 2rem;
+  gap: 3rem;
+}
+
+.home-parkings-panel {
+  width: 380px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  padding: 20px 24px;
+  border-radius: 14px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-title {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.home-parkings-scroll {
+  overflow-y: auto;
+  padding-right: 6px;
+  max-height: 78vh;
+}
+
+.home-parkings-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.home-parkings-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+}
+
+.home-parkings-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.25);
+  border-radius: 3px;
+}
+
+.home-actions-card {
+  min-width: 260px;
+  padding: 24px 28px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.home-actions-card .action-btn {
+  width: 100%;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.app-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1565c0;
+  margin-bottom: 10px;
+}
+
+.action-btn {
+  width: 80%;
+  max-width: 260px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.03);
+}
+
+.login-btn {
+  background: #1976d2;
+  color: white;
+}
+
+.register-btn {
+  background: #2e7d32;
+  color: white;
+}
+
+.quick-booking-btn {
+  background: #ff9f00;
+  color: #fff;
 }
 
 .parkings-list {
@@ -68,23 +166,52 @@
 .register-btn { /* background-color: #2e7d32; color: #fff; */ }
 .quick-booking-btn { /* background-color: #ffa000; color: #fff; */ }
 
-/* Центрира целия блок по средата на страницата */
 .page-wrapper {
-  display: flex;
-  justify-content: center;   /* център хоризонтално */
-  padding-top: 80px;         /* леко вертикално центриране */
-  background-image: url('/assets/images/parking-bg.jpg');
-  background-size: cover;        /* запълва страницата */
-  background-position: center;   /* център на изображението */
-  background-repeat: no-repeat;  /* без повторение */
   min-height: 100vh;
+  padding-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-image: url('/assets/images/parking-bg.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
-/* Променяме ширината, за да стои хубаво */
-.home-container {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-  width: 900px;              /* фиксирана ширина за хубав layout */
+/*!* Променяме ширината, за да стои хубаво *!*/
+/*.home-container {*/
+/*  display: flex;*/
+/*  gap: 2rem;*/
+/*  align-items: flex-start;*/
+/*  width: 900px;              !* фиксирана ширина за хубав layout *!*/
+/*}*/
+
+.parkings-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 8px;
 }
+
+.reserve-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1976d2;
+  color: #fff;
+  cursor: pointer;
+}
+
+.parking-card {
+  cursor: default;
+}
+
+.parking-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.15s ease-in-out;
+}
+
+/*.login-btn    { background-color: #1976d2; color: #fff; }*/
+/*.register-btn { background-color: #2e7d32; color: #fff; }*/
+/*.quick-booking-btn { background-color: #ffa000; color: #fff; }*/
 

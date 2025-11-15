@@ -37,18 +37,23 @@ export class AdminParkingComponent implements OnInit {
   private initForm(): void {
     this.parkingForm = this.fb.group({
       name: ['', Validators.required],
+      city: ['', Validators.required],
       address: ['', Validators.required],
       spacesCount: [0, [Validators.required, Validators.min(1)]],
       pricePerHourBgn: [0, [Validators.required, Validators.min(0)]],
       cardPaymentEnabled: [false],
       loyaltyEnabled: [false],
-      loyaltyVisitPerPoint: [1],
-      loyaltyPointsRequired: [1],
-      loyaltyRewardHours: ['ONE_HOUR'],
-      mapImageUrl: ['']
+      loyaltyVisitPerPoint: [null],
+      loyaltyPointsRequired: [null],
+      loyaltyRewardHours: [null],
+      mapImageUrl: [''],
+      open24Hours: [true],
+      openingTime: [''],
+      closingTime: [''],
+      contactPhone: ['']
     });
 
-    // Когато чекбоксът за лоялност се променя – включваме/изключваме полетата
+
     this.parkingForm.get('loyaltyEnabled')!.valueChanges.subscribe(enabled => {
       const fields = ['loyaltyVisitPerPoint', 'loyaltyPointsRequired', 'loyaltyRewardHours'];
       fields.forEach(f => {
@@ -81,37 +86,40 @@ export class AdminParkingComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.parkingForm.invalid) {
-      this.parkingForm.markAllAsTouched();
-      return;
-    }
-
-    const value = this.parkingForm.value;
-
-    const request: CreateParkingRequest = {
-      name: value.name,
-      address: value.address,
-      spacesCount: value.spacesCount,
-      pricePerHourBgn: value.pricePerHourBgn,
-      cardPaymentEnabled: value.cardPaymentEnabled,
-      loyaltyEnabled: value.loyaltyEnabled,
-      loyaltyVisitPerPoint: value.loyaltyEnabled ? value.loyaltyVisitPerPoint : undefined,
-      loyaltyPointsRequired: value.loyaltyEnabled ? value.loyaltyPointsRequired : undefined,
-      loyaltyRewardHours: value.loyaltyEnabled ? value.loyaltyRewardHours : undefined,
-      mapImageUrl: value.mapImageUrl
-    };
-
-    this.dataService.createParking(request).subscribe({
-      next: created => {
-        // За момента – просто показваме съобщение и скриваме формата
-        alert('Паркингът е създаден успешно.');
-        this.myParkings = [created];
-        this.showCreateForm = false; // по задание: ако вече има → не показваме форма
-      },
-      error: err => {
-        console.error('Error creating parking', err);
-        alert('Възникна грешка при създаване на паркинг.');
-      }
-    });
+    // if (this.parkingForm.invalid) {
+    //   this.parkingForm.markAllAsTouched();
+    //   return;
+    // }
+    //
+    // const value = this.parkingForm.value;
+    //
+    // const request: CreateParkingRequest = {
+    //   name: value.name,
+    //   address: value.address,
+    //   spacesCount: value.spacesCount,
+    //   pricePerHourBgn: value.pricePerHourBgn,
+    //   cardPaymentEnabled: value.cardPaymentEnabled,
+    //   loyaltyEnabled: value.loyaltyEnabled,
+    //   loyaltyVisitPerPoint: value.loyaltyEnabled ? value.loyaltyVisitPerPoint : undefined,
+    //   loyaltyPointsRequired: value.loyaltyEnabled ? value.loyaltyPointsRequired : undefined,
+    //   loyaltyRewardHours: value.loyaltyEnabled ? value.loyaltyRewardHours : undefined,
+    //   mapImageUrl: value.mapImageUrl,
+    //   open24Hours: value.open24Hours,
+    //   openingTime: value.open24Hours ? null : value.openingTime,
+    //   closingTime: value.open24Hours ? null : value.closingTime
+    // };
+    //
+    // this.dataService.createParking(request).subscribe({
+    //   next: created => {
+    //     // За момента – просто показваме съобщение и скриваме формата
+    //     alert('Паркингът е създаден успешно.');
+    //     this.myParkings = [created];
+    //     this.showCreateForm = false; // по задание: ако вече има → не показваме форма
+    //   },
+    //   error: err => {
+    //     console.error('Error creating parking', err);
+    //     alert('Възникна грешка при създаване на паркинг.');
+    //   }
+    // });
   }
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {Router, RouterModule} from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {DataService} from "../../service/data.service";
 import {CommonModule} from "@angular/common";
 
@@ -14,11 +14,13 @@ import {CommonModule} from "@angular/common";
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
+  private redirectUrl: string | null = null;
 
   constructor(
     private service: DataService,
     private fb: FormBuilder,
-    private router: Router) {
+    private router: Router,
+    private route: ActivatedRoute) {
     this
       .loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -27,6 +29,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl');
   }
 
   submitForm() {
@@ -35,7 +38,9 @@ export class LoginComponent implements OnInit {
         if (response.jwtToken != null) {
           const jwtToken = response.jwtToken;
           localStorage.setItem('jwtToken', jwtToken);
-          this.router.navigateByUrl("/profile");
+
+          const target = this.redirectUrl || '/profile';
+          this.router.navigateByUrl(target);
         }
       },
       (error) => {

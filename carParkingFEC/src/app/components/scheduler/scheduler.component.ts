@@ -1,4 +1,4 @@
-import {Component, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, ViewChild, AfterViewInit, OnInit} from '@angular/core';
 import {DayPilot, DayPilotModule, DayPilotSchedulerComponent} from "daypilot-pro-angular";
 
 import {HttpClientModule} from "@angular/common/http";
@@ -7,7 +7,7 @@ import {DataService} from "../../service/data.service";
 import {CreateComponent} from "../create/create.component";
 import {EditComponent} from "../edit/edit.component";
 import {FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {Router, RouterModule} from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {CommonModule} from "@angular/common";
 
 
@@ -18,7 +18,9 @@ import {CommonModule} from "@angular/common";
   styleUrl: './scheduler.component.css',
   imports: [DayPilotModule, HttpClientModule, CreateComponent, EditComponent, FormsModule, RouterModule, ReactiveFormsModule, CommonModule]
 })
-export class SchedulerComponent implements AfterViewInit {
+export class SchedulerComponent implements AfterViewInit, OnInit {
+
+  selectedParkingId: number | null = null;
 
   @ViewChild("scheduler")
   scheduler!: DayPilotSchedulerComponent;
@@ -180,7 +182,14 @@ export class SchedulerComponent implements AfterViewInit {
   userRole: string = '';
   currentUserId: number | null = null;
 
-  constructor(private service: DataService, private router: Router) {
+  constructor(private service: DataService, private router: Router,private route: ActivatedRoute) {
+  }
+
+  ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      const pId = params.get('parkingId');
+      this.selectedParkingId = pId ? +pId : null;
+    })
   }
 
   ngAfterViewInit(): void {

@@ -26,19 +26,19 @@
           <span>Цена за час: <strong>{{ p.pricePerHourBgn }} лв.
       / {{ priceInEur(p.pricePerHourBgn) | number:'1.2-2' }} €</strong></span>
           <span>Плащане с карта: <strong>{{ p.cardPaymentEnabled ? 'Да' : 'Не' }}</strong></span>
-          <span>Лоялна програма: <strong>{{ p.loyaltyEnabled ? 'Да' : 'Не' }}</strong></span>
+          <span>Бонус програма: <strong>{{ p.loyaltyEnabled ? 'Да' : 'Не' }}</strong></span>
 
           <ng-container *ngIf="p.loyaltyEnabled">
     <span>
-      Посещения за 1 точка:
+      Необходими посещения за 1 точка:
       <strong>{{ p.loyaltyVisitPerPoint || '-' }}</strong>
     </span>
             <span>
-      Необходими точки:
+      Необходими точки за бонус:
       <strong>{{ p.loyaltyPointsRequired || '-' }}</strong>
     </span>
             <span>
-      Награда:
+      Бонус:
       <strong>
         {{
           p.loyaltyRewardHours === 'ONE_HOUR' ? '1 час' :
@@ -63,68 +63,102 @@
   <section class="section">
     <h2 class="section-title">Нов паркинг</h2>
 
-    <form [formGroup]="parkingForm" (ngSubmit)="saveParking()" class="form-card">
+    <form id="parking-form" [formGroup]="parkingForm" (ngSubmit)="saveParking()" class="form-card">
 
       <div class="form-grid">
         <div class="form-field">
           <label>Име</label>
-          <input formControlName="name" type="text" />
+          <input formControlName="name" type="text"/>
         </div>
 
         <div class="form-field">
-          <label>Адрес</label>
-          <input formControlName="address" type="text" />
+          <label>Град</label>
+          <input formControlName="city" type="text"/>
+        </div>
+
+        <div class="form-field">
+          <label>Адрес (улица)</label>
+          <input formControlName="address" type="text"/>
+        </div>
+
+        <div class="form-field">
+          <label>Телефон за контакт</label>
+          <input formControlName="contactPhone" type="tel" placeholder="+359 88 123 4567"/>
         </div>
 
         <div class="form-field">
           <label>Брой паркоместа</label>
-          <input formControlName="spacesCount" type="number" min="0" />
+          <input formControlName="spacesCount" type="number" min="0"/>
         </div>
 
         <div class="form-field">
           <label>Цена на час (лв)</label>
-          <input formControlName="pricePerHourBgn" type="number" step="0.50" min="0" />
+          <input formControlName="pricePerHourBgn" type="number" step="1.00" min="0"/>
         </div>
 
         <div class="form-field checkbox-field">
           <label>Плащане с карта</label>
-          <input formControlName="cardPaymentEnabled" type="checkbox" />
+          <input formControlName="cardPaymentEnabled" type="checkbox"/>
         </div>
 
+        <!-- ГРУПИРАНО РАБОТНО ВРЕМЕ -->
+        <div class="working-hours">
+          <div class="form-field checkbox-field">
+            <label>Денонощно</label>
+            <input formControlName="open24Hours" type="checkbox"/>
+          </div>
+
+          <div class="form-field" *ngIf="!parkingForm.get('open24Hours')?.value">
+            <label>Отваря в</label>
+            <input formControlName="openingTime" type="time"/>
+          </div>
+
+          <div class="form-field" *ngIf="!parkingForm.get('open24Hours')?.value">
+            <label>Затваря в</label>
+            <input formControlName="closingTime" type="time"/>
+          </div>
+          <div *ngIf="parkingForm.hasError('workingHoursInvalid')" class="error-message">
+            Работното време е невалидно: часът на отваряне трябва да бъде преди часа на затваряне.
+          </div>
+
+        </div>
+        <!-- /РАБОТНО ВРЕМЕ -->
+
         <div class="form-field checkbox-field">
-          <label>Лоялна програма</label>
-          <input formControlName="loyaltyEnabled" type="checkbox" />
+          <label>Бонус програма</label>
+          <input formControlName="loyaltyEnabled" type="checkbox"/>
         </div>
 
         <div class="form-field">
           <label>URL към карта/снимка (по желание)</label>
-          <input formControlName="mapImageUrl" type="text" />
+          <input formControlName="mapImageUrl" type="text"/>
+        </div>
+      </div> <!-- /form-grid -->
+
+      <!-- ЦЕНТРИРАНА БОНУС СЕКЦИЯ -->
+      <div class="bonus-section" *ngIf="parkingForm.get('loyaltyEnabled')?.value">
+        <div class="form-field">
+          <label>Необходими посещения за 1 бонус точка</label>
+          <input formControlName="loyaltyVisitPerPoint" type="number" min="1"/>
         </div>
 
-        <div class="form-grid" *ngIf="parkingForm.get('loyaltyEnabled')?.value">
-          <div class="form-field">
-            <label>Посещения за 1 бонус точка</label>
-            <input formControlName="loyaltyVisitPerPoint" type="number" min="1" />
-          </div>
-
-          <div class="form-field">
-            <label>Необходими точки за награда</label>
-            <input formControlName="loyaltyPointsRequired" type="number" min="1" />
-          </div>
-
-          <div class="form-field">
-            <label>Бонус (безплатни часове)</label>
-            <select formControlName="loyaltyRewardHours">
-              <option [ngValue]="null">-- избери --</option>
-              <option value="ONE_HOUR">1 час</option>
-              <option value="THREE_HOURS">3 часа</option>
-              <option value="SIX_HOURS">6 часа</option>
-              <option value="EIGHT_HOURS">8 часа</option>
-            </select>
-          </div>
+        <div class="form-field">
+          <label>Необходими точки за награда</label>
+          <input formControlName="loyaltyPointsRequired" type="number" min="1"/>
         </div>
 
+        <div class="form-field">
+          <label>Бонус (безплатни часове)</label>
+          <select formControlName="loyaltyRewardHours">
+            <option [ngValue]="null">-- избери --</option>
+            <option value="ONE_HOUR">1 час</option>
+            <option value="THREE_HOURS">3 часа</option>
+            <option value="SIX_HOURS">6 часа</option>
+            <option value="EIGHT_HOURS">8 часа</option>
+          </select>
+        </div>
       </div>
+      <!-- /БОНУС СЕКЦИЯ -->
 
       <button type="submit" class="btn save-btn">Запази</button>
       <button *ngIf="editing" type="button" class="btn cancel-btn" (click)="cancelEdit()">
@@ -132,6 +166,8 @@
       </button>
 
     </form>
+
+
   </section>
 
 </div>

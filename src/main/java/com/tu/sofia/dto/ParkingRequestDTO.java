@@ -3,10 +3,12 @@ package com.tu.sofia.dto;
 import com.tu.sofia.enums.LoyaltyRewardHours;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 public class ParkingRequestDTO {
     private String name;
     private String address;
+    private String city;
     private Integer spacesCount;
     private BigDecimal pricePerHourBgn;
     private Boolean cardPaymentEnabled;
@@ -15,6 +17,11 @@ public class ParkingRequestDTO {
     private Integer loyaltyPointsRequired;
     private LoyaltyRewardHours loyaltyRewardHours;
     private String mapImageUrl;
+    private Boolean open24Hours;
+    private LocalTime openingTime;
+    private LocalTime closingTime;
+
+    private String contactPhone;
 
     public String getName() {
         return name;
@@ -103,6 +110,51 @@ public class ParkingRequestDTO {
 
     public ParkingRequestDTO setMapImageUrl(String mapImageUrl) {
         this.mapImageUrl = mapImageUrl;
+        return this;
+    }
+
+    public LocalTime getClosingTime() {
+        return closingTime;
+    }
+
+    public ParkingRequestDTO setClosingTime(LocalTime closingTime) {
+        this.closingTime = closingTime;
+        return this;
+    }
+
+    public LocalTime getOpeningTime() {
+        return openingTime;
+    }
+
+    public ParkingRequestDTO setOpeningTime(LocalTime openingTime) {
+        this.openingTime = openingTime;
+        return this;
+    }
+
+    public Boolean getOpen24Hours() {
+        return open24Hours;
+    }
+
+    public ParkingRequestDTO setOpen24Hours(Boolean open24Hours) {
+        this.open24Hours = open24Hours;
+        return this;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public ParkingRequestDTO setCity(String city) {
+        this.city = city;
+        return this;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public ParkingRequestDTO setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
         return this;
     }
 }

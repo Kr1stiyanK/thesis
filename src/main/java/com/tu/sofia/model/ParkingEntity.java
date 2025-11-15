@@ -4,8 +4,10 @@ import com.tu.sofia.enums.LoyaltyRewardHours;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 @Entity
+//@Table(name = "parkings")
 public class ParkingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +17,10 @@ public class ParkingEntity {
 
     @Column(unique = true, length = 1024)
     private String address;
+
+    private String city;
+
+    private String contactPhone;
 
     private Integer spacesCount;
 
@@ -33,6 +39,13 @@ public class ParkingEntity {
     private LoyaltyRewardHours loyaltyRewardHours;
 
     private String mapImageUrl;
+
+    private Boolean open24Hours = true;
+
+    private LocalTime openingTime;
+
+    private LocalTime closingTime;
+
 
     private Long ownerId;
 
@@ -141,6 +154,51 @@ public class ParkingEntity {
 
     public ParkingEntity setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+        return this;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public ParkingEntity setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+        return this;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public ParkingEntity setCity(String city) {
+        this.city = city;
+        return this;
+    }
+
+    public Boolean getOpen24Hours() {
+        return open24Hours;
+    }
+
+    public ParkingEntity setOpen24Hours(Boolean open24Hours) {
+        this.open24Hours = open24Hours;
+        return this;
+    }
+
+    public LocalTime getOpeningTime() {
+        return openingTime;
+    }
+
+    public ParkingEntity setOpeningTime(LocalTime openingTime) {
+        this.openingTime = openingTime;
+        return this;
+    }
+
+    public LocalTime getClosingTime() {
+        return closingTime;
+    }
+
+    public ParkingEntity setClosingTime(LocalTime closingTime) {
+        this.closingTime = closingTime;
         return this;
     }
 }

@@ -1,0 +1,153 @@
+<!--<div class="parking-list-container">-->
+<!--  <h2 class="list-title">{{ title }}</h2>-->
+
+<!--  <div *ngIf="parkings.length === 0" class="empty-state">-->
+<!--    Няма налични паркинги.-->
+<!--  </div>-->
+
+<!--  <div class="cards" *ngIf="parkings.length > 0">-->
+<!--    <div class="parking-card" *ngFor="let p of parkings">-->
+<!--      <h3>{{ p.name }}</h3>-->
+<!--      <p class="address">{{ p.address }}</p>-->
+
+<!--      <div class="details">-->
+<!--        <span>-->
+<!--          Свободни места сега:-->
+<!--          <strong>{{ p.freeSpaces }}</strong>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          Цена на час:-->
+<!--          <strong>-->
+<!--            {{ p.pricePerHourBgn | number:'1.2-2' }} лв.-->
+<!--            / {{ priceInEur(p.pricePerHourBgn) | number:'1.2-2' }} €-->
+<!--          </strong>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          Плащане с карта:-->
+<!--          <strong>{{ p.cardPaymentEnabled ? 'Да' : 'Не' }}</strong>-->
+<!--        </span>-->
+<!--        <span>-->
+<!--          Лоялна програма:-->
+<!--          <strong>{{ p.loyaltyEnabled ? 'Да' : 'Не' }}</strong>-->
+<!--        </span>-->
+<!--        <span *ngIf="p.contactPhone">-->
+<!--    Телефон за контакт:-->
+<!--    <strong>-->
+<!--      <a [href]="'tel:' + p.contactPhone">{{ p.contactPhone }}</a>-->
+<!--    </strong>-->
+<!--  </span>-->
+<!--      </div>-->
+
+<!--      <button class="reserve-btn" (click)="bookHere(p)">-->
+<!--        Резервирай тук-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="parking-list-wrapper">
+
+  <h2 class="list-title" *ngIf="mode === 'admin'">Моите паркинги</h2>
+  <h2 class="list-title" *ngIf="mode !== 'admin'">Налични паркинги</h2>
+
+  <div *ngIf="parkings.length === 0" class="empty-state">
+    Няма налични паркинги.
+  </div>
+
+  <div class="parking-list" *ngIf="parkings.length > 0">
+    <div class="parking-card" *ngFor="let p of parkings">
+
+      <div class="parking-main">
+        <h3>{{ p.name }}</h3>
+
+        <p class="address">
+          <span *ngIf="p.city">{{ p.city }}, </span>{{ p.address }}
+        </p>
+
+        <div class="map-image-wrapper">
+          <img *ngIf="p.mapImageUrl; else noImage"
+               [src]="p.mapImageUrl"
+               alt="Карта на паркинга"
+               class="map-image"
+               (error)="p.mapImageUrl = ''">
+
+          <ng-template #noImage>
+            <div class="no-image">Няма добавена снимка.</div>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="details">
+        <span>Места общо: <strong>{{ p.spacesCount }}</strong></span>
+        <span>Свободни места сега: <strong>{{ p.freeSpaces }}</strong></span>
+
+        <span>
+          Цена на час:
+          <strong>
+            {{ p.pricePerHourBgn | number:'1.2-2' }} лв.
+            / {{ priceInEur(p.pricePerHourBgn) | number:'1.2-2' }} €
+          </strong>
+        </span>
+
+        <span>
+          Плащане с карта:
+          <strong>{{ p.cardPaymentEnabled ? 'Да' : 'Не' }}</strong>
+        </span>
+
+        <span>
+          Работно време:
+          <strong>{{ workHoursLabel(p) }}</strong>
+        </span>
+
+        <span *ngIf="p.contactPhone">
+          Телефон за контакт:
+          <strong>
+            <a [href]="'tel:' + p.contactPhone">
+              {{ p.contactPhone }}
+            </a>
+          </strong>
+        </span>
+
+        <span>
+          Бонус програма:
+          <strong>{{ p.loyaltyEnabled ? 'Да' : 'Не' }}</strong>
+        </span>
+
+        <ng-container *ngIf="p.loyaltyEnabled">
+          <span>
+            Необходими посещения за 1 точка:
+            <strong>{{ p.loyaltyVisitPerPoint || '-' }}</strong>
+          </span>
+          <span>
+            Необходими точки за бонус:
+            <strong>{{ p.loyaltyPointsRequired || '-' }}</strong>
+          </span>
+          <span>
+            Бонус:
+            <strong>{{ rewardLabel(p) }}</strong>
+          </span>
+        </ng-container>
+      </div>
+
+      <div class="actions">
+        <!-- USER / GUEST → Резервиране -->
+        <button
+          *ngIf="mode !== 'admin'"
+          class="btn primary"
+          (click)="onAction(p)">
+          Резервирай тук
+        </button>
+
+        <!-- ADMIN → Редакция -->
+        <button
+          *ngIf="mode === 'admin'"
+          class="btn secondary"
+          (click)="onAction(p)">
+          Редактирай
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+

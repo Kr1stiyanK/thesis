@@ -1,13 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {RouterModule} from "@angular/router";
+import {Router, RouterModule} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {Subscription, switchMap, timer} from "rxjs";
 import {DataService} from "../../service/data.service";
+import {ParkingListComponent} from "../parking-list/parking-list.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, ParkingListComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -19,7 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   parkings: ParkingHome[] = [];
 
 
-  constructor(private service: DataService) {
+  constructor(private service: DataService, private router: Router) {
   }
 
   ngOnInit() {
@@ -36,6 +37,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
+  goToScheduler(p: ParkingHome) {
+    this.router.navigate(['/scheduler'], {
+      queryParams: { parkingId: p.id }
+    });
+  }
+
   private loadParkings(): void{
     this.service.getParkingsForHome()
       .subscribe({
@@ -50,7 +57,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 export interface ParkingHome {
   id: number;
   name: string;
+  city?: string;
   address: string;
+  spacesCount: number;
   freeSpaces: number;
   pricePerHourBgn: number;
+  cardPaymentEnabled: boolean;
+  loyaltyEnabled: boolean;
+  loyaltyVisitPerPoint?: number;
+  loyaltyPointsRequired?: number;
+  loyaltyRewardHours?: 'ONE_HOUR' | 'THREE_HOURS' | 'SIX_HOURS' | 'EIGHT_HOURS';
+  mapImageUrl?: string;
+  open24Hours?: boolean;
+  openingTime?: string;
+  closingTime?: string;
+  contactPhone?: string;
 }
+
+
+

@@ -51,3 +51,32 @@
   color: #fff;
   cursor: pointer;
 }
+
+.working-hours {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  grid-column: 1 / -1;
+}
+
+.working-hours .form-field {
+  flex: 1;
+}
+
+.bonus-section {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.bonus-section .form-field {
+  width: 60%;
+}
+
+.bonus-section input,
+.bonus-section select {
+  width: 100%;
+}
+

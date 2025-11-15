@@ -26,11 +26,30 @@ public class ParkingController {
     public List<ParkingHomeDTO> getAllForHomePage() {
         List<ParkingEntity> parkingEntities = parkingRepository.findAll();
         return parkingEntities.stream()
-                .map(p -> new ParkingHomeDTO()
-                        .setId(p.getId())
-                        .setName(p.getName())
-                        .setAddress(p.getAddress())
-                        .setFreeSpaces(p.getSpacesCount())
-                        .setPricePerHourBgn(p.getPricePerHourBgn())).toList();
+                .map(this::toHomeDto)
+                .toList();
+    }
+
+    private ParkingHomeDTO toHomeDto(ParkingEntity e) {
+//        int freeSpaces = parkingRepository.countFreeSpacesForParking(e.getId()); // какъвто ти е методът
+
+        return new ParkingHomeDTO()
+                .setId(e.getId())
+                .setName(e.getName())
+                .setCity(e.getCity())
+                .setAddress(e.getAddress())
+                .setSpacesCount(e.getSpacesCount())
+                .setFreeSpaces(e.getSpacesCount())
+                .setPricePerHourBgn(e.getPricePerHourBgn())
+                .setCardPaymentEnabled(Boolean.TRUE.equals(e.getCardPaymentEnabled()))
+                .setLoyaltyEnabled(Boolean.TRUE.equals(e.getLoyaltyEnabled()))
+                .setLoyaltyVisitPerPoint(e.getLoyaltyVisitPerPoint())
+                .setLoyaltyPointsRequired(e.getLoyaltyPointsRequired())
+                .setLoyaltyRewardHours(e.getLoyaltyRewardHours())
+                .setMapImageUrl(e.getMapImageUrl())
+                .setOpen24Hours(Boolean.TRUE.equals(e.getOpen24Hours()))
+                .setOpeningTime(e.getOpeningTime())
+                .setClosingTime(e.getClosingTime())
+                .setContactPhone(e.getContactPhone());
     }
 }

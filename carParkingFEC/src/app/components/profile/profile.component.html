@@ -1,22 +1,70 @@
-<div class="profile-container">
-  <div *ngIf="currentUser" class="welcome-message">
-    Welcome, {{ currentUser }}
+<!--<div class="profile-container">-->
+<!--  <div *ngIf="currentUser" class="welcome-message">-->
+<!--    Welcome, {{ currentUser }}-->
+<!--  </div>-->
+<!--  <div class="profile-picture">-->
+<!--    <img src="assets/profile-picture.png" alt="Profile Picture"/>-->
+<!--  </div>-->
+<!--  <div class="profile-parkings-section">-->
+<!--    <h2>Избери паркинг за резервация</h2>-->
+<!--    <app-parking-list [parkings]="parkings"></app-parking-list>-->
+<!--  </div>-->
+
+<!--  <div class="profile-options">-->
+<!--    <ng-container *ngIf="isAdmin; else userOptions">-->
+<!--      <button [routerLink]="['/scheduler']">See Bookings</button>-->
+<!--      <button [routerLink]="['/all-profiles']">All Profiles</button>-->
+<!--      <button [routerLink]="['/all-bookings']">All Bookings</button>-->
+<!--      <button [routerLink]="['/my-parkings']">My Parkings</button>-->
+<!--    </ng-container>-->
+<!--    <ng-template #userOptions>-->
+<!--      <button [routerLink]="['/profile-edit']">Edit profile</button>-->
+<!--      <button [routerLink]="['/scheduler']">Book a park space</button>-->
+<!--      <button [routerLink]="['/my-bookings']">My bookings</button>-->
+<!--    </ng-template>-->
+<!--    <button (click)="logout()">Logout</button>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="profile-page">
+
+  <!-- Left column – profile and buttons -->
+  <div class="profile-main">
+
+    <div *ngIf="currentUser" class="welcome-message">
+      Welcome, {{ currentUser }}
+    </div>
+
+    <div class="profile-picture">
+      <img src="assets/profile-picture.png" alt="Profile Picture"/>
+    </div>
+
+    <div class="profile-options">
+      <ng-container *ngIf="isAdmin; else userOptions">
+        <button [routerLink]="['/scheduler']">See Bookings</button>
+        <button [routerLink]="['/all-profiles']">All Profiles</button>
+        <button [routerLink]="['/all-bookings']">All Bookings</button>
+        <button [routerLink]="['/my-parkings']">My Parkings</button>
+      </ng-container>
+
+      <ng-template #userOptions>
+        <button [routerLink]="['/profile-edit']">Edit profile</button>
+        <button [routerLink]="['/my-bookings']">My bookings</button>
+      </ng-template>
+
+      <button (click)="logout()">Logout</button>
+    </div>
+
   </div>
-  <div class="profile-picture">
-    <img src="assets/profile-picture.png" alt="Profile Picture"/>
+
+  <!-- RIGHT COLUMN – parking list -->
+  <div class="profile-parkings-section">
+    <div class="parkings-scroll">
+      <app-parking-list
+        [parkings]="parkings"
+        [mode]="isAdmin ? 'admin' : 'user'">
+      </app-parking-list>
+    </div>
   </div>
-  <div class="profile-options">
-    <ng-container *ngIf="isAdmin; else userOptions">
-      <button [routerLink]="['/scheduler']">See Bookings</button>
-      <button [routerLink]="['/all-profiles']">All Profiles</button>
-      <button [routerLink]="['/all-bookings']">All Bookings</button>
-      <button [routerLink]="['/my-parkings']">My Parkings</button>
-    </ng-container>
-    <ng-template #userOptions>
-      <button [routerLink]="['/profile-edit']">Edit profile</button>
-      <button [routerLink]="['/scheduler']">Book a park space</button>
-      <button [routerLink]="['/my-bookings']">My bookings</button>
-    </ng-template>
-    <button (click)="logout()">Logout</button>
-  </div>
+
 </div>
