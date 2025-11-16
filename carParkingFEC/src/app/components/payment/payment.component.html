@@ -48,7 +48,7 @@
 
 <div class="payment-form">
   <h2>Invoice</h2>
-  <p class="total-price">Total Price: {{ totalPrice }} BGN</p>
+  <p class="total-price">Обща цена: {{ totalPrice }} BGN</p>
   <form [formGroup]="paymentForm" (ngSubmit)="onPaymentSubmit()">
     <div class="card-icons">
       <img src="assets/visa.png" alt="Visa">
@@ -57,35 +57,35 @@
       <img src="assets/amex.png" alt="American Express">
     </div>
     <div class="form-group">
-      <label for="cardNumber">Card number</label>
+      <label for="cardNumber">Номер на картата</label>
       <input type="text" id="cardNumber" formControlName="cardNumber" placeholder="1234 5678 9012 3456">
       <div *ngIf="paymentForm.controls['cardNumber'].errors && paymentForm.controls['cardNumber'].touched">
-        <small *ngIf="paymentForm.controls['cardNumber'].errors['required']">Card number is required</small>
-        <small *ngIf="paymentForm.controls['cardNumber'].errors['minlength']">Card number must be 16 digits</small>
-        <small *ngIf="paymentForm.controls['cardNumber'].errors['pattern']">Card number is invalid</small>
+        <small *ngIf="paymentForm.controls['cardNumber'].errors['required']">Номерът на картата е задължителен</small>
+        <small *ngIf="paymentForm.controls['cardNumber'].errors['minlength']">Номерът на картата трявбва да е 16 цифрен</small>
+        <small *ngIf="paymentForm.controls['cardNumber'].errors['pattern']">Номерът на картата е невалиден</small>
       </div>
     </div>
     <div class="form-group">
-      <label for="cardName">Name on card</label>
+      <label for="cardName">Притежател на картата</label>
       <input type="text" id="cardName" formControlName="cardName" placeholder="Ex. John Website">
       <div *ngIf="paymentForm.controls['cardName'].errors && paymentForm.controls['cardName'].touched">
-        <small *ngIf="paymentForm.controls['cardName'].errors['required']">Name on card is required</small>
+        <small *ngIf="paymentForm.controls['cardName'].errors['required']">Притежателят на картата е задължителен</small>
       </div>
     </div>
     <div class="form-group">
-      <label for="expiryDate">Expiry date</label>
+      <label for="expiryDate">Дата на изтичане на картата</label>
       <input type="text" id="expiryDate" formControlName="expiryDate" placeholder="MM/YY">
       <div *ngIf="paymentForm.controls['expiryDate'].errors && paymentForm.controls['expiryDate'].touched">
-        <small *ngIf="paymentForm.controls['expiryDate'].errors['required']">Expiry date is required</small>
-        <small *ngIf="paymentForm.controls['expiryDate'].errors['pattern']">Expiry date is invalid</small>
+        <small *ngIf="paymentForm.controls['expiryDate'].errors['required']">Датата на изтичане на картата е задължителна</small>
+        <small *ngIf="paymentForm.controls['expiryDate'].errors['pattern']">Датата на изтичане на картата е невалидна</small>
       </div>
     </div>
     <div class="form-group">
-      <label for="cvv">Security code</label>
+      <label for="cvv">CVV2/CVC2 код</label>
       <input type="text" id="cvv" formControlName="cvv" placeholder="123">
       <div *ngIf="paymentForm.controls['cvv'].errors && paymentForm.controls['cvv'].touched">
-        <small *ngIf="paymentForm.controls['cvv'].errors['required']">Security code is required</small>
-        <small *ngIf="paymentForm.controls['cvv'].errors['minlength']">Security code must be 3 digits</small>
+        <small *ngIf="paymentForm.controls['cvv'].errors['required']">Защитният CVV2/CVC2 код е задължителен</small>
+        <small *ngIf="paymentForm.controls['cvv'].errors['minlength']">CVV2/CVC2 кодът трябва да е 3 цифрен</small>
       </div>
     </div>
     <button type="submit" [disabled]="!paymentForm.valid">Next</button>

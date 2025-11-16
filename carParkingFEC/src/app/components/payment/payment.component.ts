@@ -17,46 +17,114 @@ export class PaymentComponent implements OnInit {
   totalPrice: number;
   isGuestUser: boolean;
 
-  constructor(private router: Router, private ds: DataService, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private ds: DataService,
+    private fb: FormBuilder
+  ) {
     const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as { bookingDetails: any, totalPrice: number };
-    this.bookingDetails = state.bookingDetails;
-    this.totalPrice = state.totalPrice;
+    const state = navigation?.extras.state as { bookingDetails: any, totalPrice: number } | undefined;
+
+    this.bookingDetails = state?.bookingDetails;
+    this.totalPrice = state?.totalPrice ?? 0;
 
     this.paymentForm = this.fb.group({
-      cardNumber: ['', [Validators.required, Validators.minLength(16), Validators.maxLength(16), Validators.pattern(/^[0-9]{16}$/)]],
+      cardNumber: ['', [
+        Validators.required,
+        Validators.minLength(16),
+        Validators.maxLength(16),
+        Validators.pattern(/^[0-9]{16}$/)
+      ]],
       cardName: ['', Validators.required],
-      expiryDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/([0-9]{2})$/)]],
-      cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
+      expiryDate: ['', [
+        Validators.required,
+        Validators.pattern(/^(0[1-9]|1[0-2])\/([0-9]{2})$/)
+      ]],
+      cvv: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(3),
+        Validators.pattern(/^[0-9]{3}$/)
+      ]],
     });
 
     this.isGuestUser = !localStorage.getItem('jwtToken');
   }
 
   ngOnInit(): void {
+    if (!this.bookingDetails) {
+      this.router.navigate(['/']);
+    }
   }
 
+  // onPaymentSubmit() {
+  //   if (this.paymentForm.valid) {
+  //     if (this.isGuestUser) {
+  //       this.ds.quickBooking(this.bookingDetails).subscribe(
+  //         (response) => {
+  //           this.router.navigate(['/booking-success'], {state: {bookingDetails: this.bookingDetails}});
+  //         },
+  //         (error) => {
+  //           alert('Payment failed: ' + error.message);
+  //         }
+  //       );
+  //     } else {
+  //       this.ds.createEvent(this.bookingDetails).subscribe(
+  //         (response) => {
+  //           this.router.navigate(['/scheduler'], {state: {bookingDetails: this.bookingDetails}});
+  //         },
+  //         (error) => {
+  //           alert('Payment failed: ' + error.message);
+  //         }
+  //       );
+  //     }
+  //   }
+  // }
+
   onPaymentSubmit() {
-    if (this.paymentForm.valid) {
-      if (this.isGuestUser) {
-        this.ds.quickBooking(this.bookingDetails).subscribe(
-          (response) => {
-            this.router.navigate(['/booking-success'], {state: {bookingDetails: this.bookingDetails}});
-          },
-          (error) => {
-            alert('Payment failed: ' + error.message);
-          }
-        );
-      } else {
-        this.ds.createEvent(this.bookingDetails).subscribe(
-          (response) => {
-            this.router.navigate(['/scheduler'], {state: {bookingDetails: this.bookingDetails}});
-          },
-          (error) => {
-            alert('Payment failed: ' + error.message);
-          }
-        );
-      }
+    if (this.paymentForm.invalid || !this.bookingDetails) {
+      this.paymentForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.isGuestUser) {
+      // GUEST → използваме quickBooking (без spaceNumber)
+      const dto = {
+        parkingId: this.bookingDetails.parkingId,
+        startTime: this.bookingDetails.startTime, // ISO string
+        endTime: this.bookingDetails.endTime
+      };
+
+      this.ds.quickBooking(dto).subscribe({
+        next: (created) => {
+          this.router.navigate(['/booking-success'], {
+            state: { bookingDetails: created }
+          });
+        },
+        error: (error) => {
+          console.error(error);
+          alert('Payment / booking failed: ' + (error.message || 'Unknown error'));
+        }
+      });
+
+    } else {
+      // LOGGED-IN → текущия flow с избрано място
+      const parkingId = this.bookingDetails.parkingId;
+      const dto = {
+        spaceNumber: this.bookingDetails.spaceNumber,
+        startTime: this.bookingDetails.startTime,
+        endTime: this.bookingDetails.endTime
+      };
+
+      this.ds.createParkingBooking(parkingId, dto).subscribe({
+        next: (created) => {
+          this.router.navigate(['/scheduler'], { queryParams: { parkingId } });
+        },
+        error: (error) => {
+          console.error(error);
+          alert('Payment / booking failed: ' + (error.message || 'Unknown error'));
+        }
+      });
     }
   }
 }

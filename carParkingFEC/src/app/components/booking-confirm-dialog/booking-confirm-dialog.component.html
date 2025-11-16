@@ -1,0 +1,60 @@
+<div class="dialog-backdrop" *ngIf="visible && data">
+  <div class="dialog">
+    <h3>Потвърждение на резервация</h3>
+
+    <div class="dialog-body">
+      <p><strong>Паркинг:</strong> {{ data.parkingName }}</p>
+      <p><strong>Паркомясто:</strong> {{ data.spaceNumber }}</p>
+      <p>
+        <strong>От:</strong>
+        {{ formattedTime(data.startTime) }}
+      </p>
+      <p>
+        <strong>До:</strong>
+        {{ formattedTime(data.endTime) }}
+      </p>
+      <div class="info-row price">
+        <label>Обща цена:</label>
+        <strong>
+          {{ data.totalPrice | number:'1.2-2' }} лв.
+          / {{ priceInEur | number:'1.2-2' }} €
+        </strong>
+      </div>
+
+      <div class="payment-section">
+        <div class="dialog-row">
+          <label>Начин на плащане:</label>
+        </div>
+        <div class="payment-options">
+          <div class="payment-option">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="cash"
+              [(ngModel)]="paymentMethod"
+            />
+            <span>Плащане в брой</span>
+          </div>
+
+          <div *ngIf="data.cardPaymentEnabled" class="payment-option">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="card"
+              [(ngModel)]="paymentMethod">
+            Плащане с карта
+          </div>
+
+          <p *ngIf="!data.cardPaymentEnabled" class="hint">
+            * Плащане с карта не е налично за този паркинг.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button class="btn cancel" (click)="onCancel()">Отказ</button>
+      <button class="btn confirm" (click)="onConfirm()">Потвърди</button>
+    </div>
+  </div>
+</div>

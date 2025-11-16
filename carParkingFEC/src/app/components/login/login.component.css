@@ -36,3 +36,10 @@ button.active {
   text-decoration: underline;
 }
 
+label.required::after {
+  content: " *";
+  color: red;
+  margin-left: 3px;
+}
+
+

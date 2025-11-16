@@ -1,16 +1,82 @@
-<div class="header">
-  <div class="filters">
-<!--    <label for="shortonly"><input type="checkbox" id="shortonly" [ngModel]="filter.shortOnly"-->
-<!--                                  (ngModelChange)="changeShort($event)"> Short Bookings Only</label>-->
-<!--    <label for="freeonly"><input type="checkbox" id="freeonly" [ngModel]="filter.freeOnly"-->
-<!--                                 (ngModelChange)="changeFree($event)"> Free Parking Spaces Only</label>-->
+<div class="scheduler-page" *ngIf="!error; else errorTpl">
+
+  <div class="scheduler-header" *ngIf="parkingMeta">
+    <h2>{{ parkingMeta.name }}</h2>
+    <div class="sub">
+      Места общо: {{ parkingMeta.spacesCount }}
+
+      <span class="work-hours" *ngIf="parkingMeta.open24Hours">
+        · Работи 24/7
+      </span>
+
+      <span class="work-hours" *ngIf="!parkingMeta.open24Hours">
+        · Работно време:
+        {{ parkingMeta.openingTime?.substring(0, 5) }} –
+        {{ parkingMeta.closingTime?.substring(0, 5) }}
+      </span>
+
+      <span class="price-info" *ngIf="parkingMeta.pricePerHourBgn != null">
+        · Цена на час:
+        {{ parkingMeta.pricePerHourBgn | number:'1.2-2' }} лв.
+        / {{ priceInEur(parkingMeta.pricePerHourBgn) | number:'1.2-2' }} €
+      </span>
+    </div>
+
+    <div class="date-nav">
+      <button (click)="changeDate(-1)">‹</button>
+      <span>{{ selectedDate | date:'EEEE, d MMMM yyyy' }}</span>
+      <button (click)="changeDate(1)">›</button>
+    </div>
   </div>
-  <div class="user-actions">
-    <button [routerLink]="['/map']">See on map</button>
-    <button [routerLink]="['/profile']">My Profile</button>
-    <button (click)="logout()">Logout</button>
+
+  <div class="scheduler-grid" *ngIf="parkingMeta">
+    <table class="schedule-table">
+      <thead>
+      <tr>
+        <th>Място / Час</th>
+        <th *ngFor="let s of timeSlots">
+          {{ s.label }}
+        </th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let space of spaces">
+        <th class="space-cell">Място {{ space }}</th>
+
+        <td *ngFor="let slot of timeSlots; let i = index"
+            [class.past]="isPast(slot)"
+            [class.booked]="isBooked(space, slot)"
+            [class.free]="!isPast(slot) && !isBooked(space, slot)"
+            [class.selected]="isSelected(space, i)"
+            (click)="onSlotClick(space, slot, i)">
+
+          <ng-container *ngIf="isBooked(space, slot); else freeTpl">
+            Заето
+          </ng-container>
+
+          <ng-template #freeTpl>
+            <span *ngIf="isPast(slot)">Минало</span>
+            <span *ngIf="!isPast(slot)">Свободно</span>
+          </ng-template>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
   </div>
+
+  <app-booking-confirm-dialog
+    [visible]="dialogVisible"
+    [data]="dialogData"
+    (confirm)="onDialogConfirm($event)"
+    (cancel)="onDialogCancel()">
+  </app-booking-confirm-dialog>
+
+
 </div>
-<daypilot-scheduler [config]="config" [events]="events" #scheduler></daypilot-scheduler>
-<create-dialog #create (close)="createClosed($event)"></create-dialog>
-<edit-dialog #edit (close)="editClosed($event)"></edit-dialog>
+
+<ng-template #errorTpl>
+  <div class="scheduler-error">{{ error }}</div>
+</ng-template>

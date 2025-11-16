@@ -114,6 +114,12 @@
   flex-direction: column;
 }
 
+.form-field label.required::after {
+  content: " *";
+  color: red;
+  margin-left: 3px;
+}
+
 .checkbox-field {
   flex-direction: row;
   align-items: center;

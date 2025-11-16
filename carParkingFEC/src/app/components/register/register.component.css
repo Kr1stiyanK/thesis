@@ -46,3 +46,10 @@ button[disabled] {
   background-color: #cccccc;
   cursor: not-allowed;
 }
+
+label.required::after {
+  content: " *";
+  color: red;
+  margin-left: 3px;
+}
+

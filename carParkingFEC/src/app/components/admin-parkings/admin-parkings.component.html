@@ -67,32 +67,32 @@
 
       <div class="form-grid">
         <div class="form-field">
-          <label>Име</label>
+          <label class="required">Име</label>
           <input formControlName="name" type="text"/>
         </div>
 
         <div class="form-field">
-          <label>Град</label>
+          <label class="required">Град</label>
           <input formControlName="city" type="text"/>
         </div>
 
         <div class="form-field">
-          <label>Адрес (улица)</label>
+          <label class="required">Адрес (улица)</label>
           <input formControlName="address" type="text"/>
         </div>
 
         <div class="form-field">
-          <label>Телефон за контакт</label>
+          <label class="required">Телефон за контакт</label>
           <input formControlName="contactPhone" type="tel" placeholder="+359 88 123 4567"/>
         </div>
 
         <div class="form-field">
-          <label>Брой паркоместа</label>
+          <label class="required">Брой паркоместа</label>
           <input formControlName="spacesCount" type="number" min="0"/>
         </div>
 
         <div class="form-field">
-          <label>Цена на час (лв)</label>
+          <label class="required">Цена на час (лв)</label>
           <input formControlName="pricePerHourBgn" type="number" step="1.00" min="0"/>
         </div>
 
@@ -109,18 +109,20 @@
           </div>
 
           <div class="form-field" *ngIf="!parkingForm.get('open24Hours')?.value">
-            <label>Отваря в</label>
+            <label class="required">Отваря в</label>
             <input formControlName="openingTime" type="time"/>
           </div>
 
           <div class="form-field" *ngIf="!parkingForm.get('open24Hours')?.value">
-            <label>Затваря в</label>
+            <label class="required">Затваря в</label>
             <input formControlName="closingTime" type="time"/>
+          </div>
+          <div *ngIf="parkingForm.hasError('workingHoursMissing')" class="error-message">
+            Моля, изберете „Денонощно“ или въведете час на отваряне и затваряне.
           </div>
           <div *ngIf="parkingForm.hasError('workingHoursInvalid')" class="error-message">
             Работното време е невалидно: часът на отваряне трябва да бъде преди часа на затваряне.
           </div>
-
         </div>
         <!-- /РАБОТНО ВРЕМЕ -->
 
@@ -138,17 +140,17 @@
       <!-- ЦЕНТРИРАНА БОНУС СЕКЦИЯ -->
       <div class="bonus-section" *ngIf="parkingForm.get('loyaltyEnabled')?.value">
         <div class="form-field">
-          <label>Необходими посещения за 1 бонус точка</label>
+          <label class="required">Необходими посещения за 1 бонус точка</label>
           <input formControlName="loyaltyVisitPerPoint" type="number" min="1"/>
         </div>
 
         <div class="form-field">
-          <label>Необходими точки за награда</label>
+          <label class="required">Необходими точки за награда</label>
           <input formControlName="loyaltyPointsRequired" type="number" min="1"/>
         </div>
 
         <div class="form-field">
-          <label>Бонус (безплатни часове)</label>
+          <label class="required">Бонус (безплатни часове)</label>
           <select formControlName="loyaltyRewardHours">
             <option [ngValue]="null">-- избери --</option>
             <option value="ONE_HOUR">1 час</option>
@@ -158,9 +160,15 @@
           </select>
         </div>
       </div>
-      <!-- /БОНУС СЕКЦИЯ -->
+      <!-- /Bonus section -->
 
-      <button type="submit" class="btn save-btn">Запази</button>
+      <button
+        type="submit"
+        class="btn save-btn"
+        [disabled]="parkingForm.invalid">
+        Запази
+      </button>
+
       <button *ngIf="editing" type="button" class="btn cancel-btn" (click)="cancelEdit()">
         Отказ
       </button>

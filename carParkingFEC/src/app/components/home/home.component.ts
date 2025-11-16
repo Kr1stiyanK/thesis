@@ -24,12 +24,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.sub = timer(0, 10000).pipe(
-    //   switchMap(() => this.service.getFreeNow())
-    // ).subscribe({
-    //   next: (val) => this.freeNow = val,
-    //   error: () => this.freeNow = null
-    // });
     this.loadParkings();
   }
 

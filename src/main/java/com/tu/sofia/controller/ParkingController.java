@@ -1,13 +1,16 @@
 package com.tu.sofia.controller;
 
+import com.tu.sofia.dto.BookingSlotDTO;
 import com.tu.sofia.dto.ParkingHomeDTO;
+import com.tu.sofia.dto.ParkingScheduleMetaDTO;
 import com.tu.sofia.model.ParkingEntity;
 import com.tu.sofia.repositories.ParkingRepository;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -39,7 +42,7 @@ public class ParkingController {
                 .setCity(e.getCity())
                 .setAddress(e.getAddress())
                 .setSpacesCount(e.getSpacesCount())
-                .setFreeSpaces(e.getSpacesCount())
+                .setFreeSpaces(e.getSpacesCount()) // TODO: да се добави реална логика за свободни места
                 .setPricePerHourBgn(e.getPricePerHourBgn())
                 .setCardPaymentEnabled(Boolean.TRUE.equals(e.getCardPaymentEnabled()))
                 .setLoyaltyEnabled(Boolean.TRUE.equals(e.getLoyaltyEnabled()))
@@ -52,4 +55,21 @@ public class ParkingController {
                 .setClosingTime(e.getClosingTime())
                 .setContactPhone(e.getContactPhone());
     }
+
+    @GetMapping("/{id}/schedule-meta")
+    public ParkingScheduleMetaDTO getParkingScheduleMeta(@PathVariable Long id) {
+        ParkingEntity p = parkingRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking not found"));
+
+        return new ParkingScheduleMetaDTO()
+                .setId(p.getId())
+                .setName(p.getName())
+                .setSpacesCount(p.getSpacesCount())
+                .setOpen24Hours(Boolean.TRUE.equals(p.getOpen24Hours()))
+                .setOpeningTime(p.getOpeningTime())
+                .setClosingTime(p.getClosingTime())
+                .setPricePerHourBgn(p.getPricePerHourBgn())
+                .setCardPaymentEnabled(Boolean.TRUE.equals(p.getCardPaymentEnabled()));
+    }
+
 }

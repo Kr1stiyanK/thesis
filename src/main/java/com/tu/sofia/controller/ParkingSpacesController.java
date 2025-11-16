@@ -45,22 +45,22 @@ public class ParkingSpacesController {
 //        return parkingSpaceService.countFreeNow();
 //    }
 
-    @GetMapping("/parkingspaces")
-    public Iterable<ParkingSpaceEntity> getAllParkingSpaces() {
-        return parkingSpaceService.getAllParkingSpaces();
-    }
-
-    @PostMapping("/parkingspaces/create")
-    @Transactional
-    public ResponseEntity<BookingDetails> createBooking(@RequestBody BookingCreateDTO params, Authentication authentication) {
-        try {
-            BookingDetails bookingDetails = this.bookingService.createBooking(params, authentication);
-            return ResponseEntity.ok(bookingDetails);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    @GetMapping("/parkingspaces")
+//    public Iterable<ParkingSpaceEntity> getAllParkingSpaces() {
+//        return parkingSpaceService.getAllParkingSpaces();
+//    }
+//
+//    @PostMapping("/parkingspaces/create")
+//    @Transactional
+//    public ResponseEntity<BookingDetails> createBooking(@RequestBody BookingCreateDTO params, Authentication authentication) {
+//        try {
+//            BookingDetails bookingDetails = this.bookingService.createBooking(params, authentication);
+//            return ResponseEntity.ok(bookingDetails);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
 //    @PostMapping("/parkingspaces/edit")
 //    public ResponseEntity<?> editBooking(@RequestBody BookingEditDTO params) {
@@ -73,7 +73,7 @@ public class ParkingSpacesController {
 //            BookingDetails editedBooking = bookingService.editBooking(params);
 //            Map<String, String> response = new HashMap<>();
 //            response.put("message", "Booking updated successfully.");
-//            return ResponseEntity.ok(response);
+//            return ResponseEntity.ok(response)
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update booking.");

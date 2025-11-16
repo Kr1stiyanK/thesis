@@ -197,6 +197,21 @@ export class DataService {
     return this.http.delete<void>(BASE_URL + 'api/admin/parkings/' + id, { headers });
   }
 
+  getParkingScheduleMeta(parkingId: number): Observable<ParkingScheduleMeta> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.get<ParkingScheduleMeta>(BASE_URL + `api/parkings/${parkingId}/schedule-meta`, { headers });
+  }
+
+  getParkingBookings(parkingId: number, date: string): Observable<BookingSlot[]> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.get<BookingSlot[]>(BASE_URL + `api/parkings/${parkingId}/bookings?date=${date}`, { headers });
+  }
+
+  createParkingBooking(parkingId: number, body: { spaceNumber: number; startTime: string; endTime: string }): Observable<BookingSlot> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.post<BookingSlot>(BASE_URL + `api/parkings/${parkingId}/bookings`, body, { headers });
+  }
+
 }
 
 export interface EventCreateParams {
@@ -277,5 +292,24 @@ export interface CreateParkingRequest {
   openingTime?: string;
   closingTime?: string;
   contactPhone?: string;
+}
+
+export interface ParkingScheduleMeta {
+  id: number;
+  name: string;
+  spacesCount: number;
+  open24Hours: boolean;
+  openingTime?: string;  // "HH:mm:ss"
+  closingTime?: string;  // "HH:mm:ss"
+  pricePerHourBgn: number;
+  cardPaymentEnabled: boolean;
+}
+
+export interface BookingSlot {
+  id: number;
+  spaceNumber: number;
+  startTime: string; // ISO
+  endTime: string;
+  amountBgn?: number;
 }
 

@@ -39,13 +39,13 @@ export class AdminParkingsComponent implements OnInit {
       name: parking.name,
       city: parking.city,
       address: parking.address,
-      contactPhone: parking.contactPhone ?? '',
+      contactPhone: parking.contactPhone,
       spacesCount: parking.spacesCount,
       pricePerHourBgn: parking.pricePerHourBgn,
       cardPaymentEnabled: parking.cardPaymentEnabled,
       open24Hours: parking.open24Hours,
-      openingTime: parking.open24Hours ? '' : (parking.openingTime ?? ''),
-      closingTime: parking.open24Hours ? '' : (parking.closingTime ?? ''),
+      openingTime: parking.openingTime,
+      closingTime: parking.closingTime,
       loyaltyEnabled: parking.loyaltyEnabled,
       loyaltyVisitPerPoint: parking.loyaltyVisitPerPoint ?? null,
       loyaltyPointsRequired: parking.loyaltyPointsRequired ?? null,
@@ -72,20 +72,20 @@ export class AdminParkingsComponent implements OnInit {
 
     const req: CreateParkingRequest = {
       name: formValue.name,
-      address: formValue.address,
       city: formValue.city,
+      address: formValue.address,
+      contactPhone: formValue.contactPhone,
       spacesCount: formValue.spacesCount,
       pricePerHourBgn: formValue.pricePerHourBgn,
       cardPaymentEnabled: formValue.cardPaymentEnabled,
-      loyaltyEnabled: formValue.loyaltyEnabled,
-      loyaltyVisitPerPoint: formValue.loyaltyVisitPerPoint,
-      loyaltyPointsRequired: formValue.loyaltyPointsRequired,
-      loyaltyRewardHours: formValue.loyaltyRewardHours,
-      mapImageUrl: formValue.mapImageUrl,
       open24Hours: formValue.open24Hours,
       openingTime: formValue.open24Hours ? null : formValue.openingTime,
       closingTime: formValue.open24Hours ? null : formValue.closingTime,
-      contactPhone: formValue.contactPhone || null
+      loyaltyEnabled: formValue.loyaltyEnabled,
+      loyaltyVisitPerPoint: formValue.loyaltyEnabled ? formValue.loyaltyVisitPerPoint : null,
+      loyaltyPointsRequired: formValue.loyaltyEnabled ? formValue.loyaltyPointsRequired : null,
+      loyaltyRewardHours: formValue.loyaltyEnabled ? formValue.loyaltyRewardHours : null,
+      mapImageUrl: formValue.mapImageUrl || null
     };
 
     if (this.editing) {
@@ -117,23 +117,28 @@ export class AdminParkingsComponent implements OnInit {
 
   private initForm(): void {
     this.parkingForm = this.fb.group({
-      name: [''],
-      city: [''],
-      address: [''],
-      contactPhone: [''],
-      spacesCount: [0],
-      pricePerHourBgn: [0],
+      name: ['', [Validators.required]],
+      city: ['', [Validators.required]],
+      address: ['', [Validators.required]],
+      contactPhone: ['', [Validators.required]],
+      spacesCount: [null, [Validators.required, Validators.min(1)]],
+      pricePerHourBgn: [null, [Validators.required, Validators.min(0.01)]],
       cardPaymentEnabled: [false],
+
       open24Hours: [false],
       openingTime: [''],
       closingTime: [''],
+
       loyaltyEnabled: [false],
-      loyaltyVisitPerPoint: [''],
-      loyaltyPointsRequired: [''],
-      loyaltyRewardHours: [''],
+      loyaltyVisitPerPoint: [null],
+      loyaltyPointsRequired: [null],
+      loyaltyRewardHours: [null],
       mapImageUrl: ['']
     }, {
-      validators: this.workingHoursValidator
+      validators: [
+        this.workingHoursValidator,
+        this.loyaltyValidator
+      ]
     });
   }
 
@@ -212,7 +217,7 @@ export class AdminParkingsComponent implements OnInit {
     }
 
     if (!opening || !closing) {
-      return { workingHours: true };
+      return { workingHoursMissing: true };
     }
 
     if (opening >= closing) {
@@ -221,6 +226,33 @@ export class AdminParkingsComponent implements OnInit {
 
     return null;
   }
+
+  private loyaltyValidator(form: FormGroup) {
+    const enabled = form.get('loyaltyEnabled')?.value;
+
+    if (!enabled) {
+      return null;
+    }
+
+    const visitPerPoint = form.get('loyaltyVisitPerPoint')?.value;
+    const pointsRequired = form.get('loyaltyPointsRequired')?.value;
+    const rewardHours = form.get('loyaltyRewardHours')?.value;
+
+    const errors: any = {};
+
+    if (!visitPerPoint || visitPerPoint <= 0) {
+      errors.loyaltyVisitPerPointRequired = true;
+    }
+    if (!pointsRequired || pointsRequired <= 0) {
+      errors.loyaltyPointsRequiredRequired = true;
+    }
+    if (!rewardHours) {
+      errors.loyaltyRewardHoursRequired = true;
+    }
+
+    return Object.keys(errors).length > 0 ? errors : null;
+  }
+
 
 
   priceInEur(priceBgn: number): number {
