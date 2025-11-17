@@ -1,29 +1,26 @@
-<div class="container">
-  <h2>My Bookings</h2>
-  <table>
-    <thead>
-    <tr>
-      <th>Date</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-      <th>Duration (hours)</th>
-      <th>Amount (BGN)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let booking of paginatedBookings">
-      <td>{{ booking.date | date: 'dd/MM/yyyy' }}</td>
-      <td>{{ booking.startTime | date: 'HH:mm' }}</td>
-      <td>{{ booking.endTime | date: 'HH:mm' }}</td>
-      <td>{{ booking.duration }}</td>
-      <td>BGN{{ booking.amount.toFixed(2) }}</td>
-    </tr>
-    </tbody>
-  </table>
-  <div class="pagination">
-    <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
-    <span>Page {{ currentPage }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage * pageSize >= bookings.length">Next</button>
-  </div>
-  <button routerLink="/scheduler">Book a park space</button>
+<table *ngIf="paginatedBookings.length > 0">
+  <thead>
+  <tr>
+    <th>Паркинг</th>
+    <th>Място</th>
+    <th>Начало</th>
+    <th>Край</th>
+    <th>Сума</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let b of paginatedBookings">
+    <td>{{ b.parkingName }}</td>
+    <td>{{ b.spaceNumber }}</td>
+    <td>{{ b.startTime | date:'dd.MM.yyyy HH:mm' }}</td>
+    <td>{{ b.endTime   | date:'dd.MM.yyyy HH:mm' }}</td>
+    <td>
+      {{ (b.amountBgn ?? 0) | number:'1.2-2' }} лв.
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div *ngIf="paginatedBookings.length === 0">
+  Нямаш резервации.
 </div>

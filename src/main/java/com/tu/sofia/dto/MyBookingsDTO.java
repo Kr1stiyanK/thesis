@@ -3,20 +3,20 @@ package com.tu.sofia.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class AdminBookingDTO {
+public class MyBookingsDTO {
+
     private Long id;
     private String parkingName;
     private Integer spaceNumber;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private BigDecimal amountBgn;
-    private String userEmail;
 
     public Long getId() {
         return id;
     }
 
-    public AdminBookingDTO setId(Long id) {
+    public MyBookingsDTO setId(Long id) {
         this.id = id;
         return this;
     }
@@ -25,7 +25,7 @@ public class AdminBookingDTO {
         return parkingName;
     }
 
-    public AdminBookingDTO setParkingName(String parkingName) {
+    public MyBookingsDTO setParkingName(String parkingName) {
         this.parkingName = parkingName;
         return this;
     }
@@ -34,7 +34,7 @@ public class AdminBookingDTO {
         return spaceNumber;
     }
 
-    public AdminBookingDTO setSpaceNumber(Integer spaceNumber) {
+    public MyBookingsDTO setSpaceNumber(Integer spaceNumber) {
         this.spaceNumber = spaceNumber;
         return this;
     }
@@ -43,7 +43,7 @@ public class AdminBookingDTO {
         return startTime;
     }
 
-    public AdminBookingDTO setStartTime(LocalDateTime startTime) {
+    public MyBookingsDTO setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
         return this;
     }
@@ -52,7 +52,7 @@ public class AdminBookingDTO {
         return endTime;
     }
 
-    public AdminBookingDTO setEndTime(LocalDateTime endTime) {
+    public MyBookingsDTO setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
         return this;
     }
@@ -61,17 +61,8 @@ public class AdminBookingDTO {
         return amountBgn;
     }
 
-    public AdminBookingDTO setAmountBgn(BigDecimal amountBgn) {
+    public MyBookingsDTO setAmountBgn(BigDecimal amountBgn) {
         this.amountBgn = amountBgn;
-        return this;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public AdminBookingDTO setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
         return this;
     }
 }

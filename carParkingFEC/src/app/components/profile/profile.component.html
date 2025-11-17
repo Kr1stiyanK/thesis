@@ -42,9 +42,9 @@
     <div class="profile-options">
       <ng-container *ngIf="isAdmin; else userOptions">
         <button [routerLink]="['/scheduler']">See Bookings</button>
-        <button [routerLink]="['/all-profiles']">All Profiles</button>
-        <button [routerLink]="['/all-bookings']">All Bookings</button>
-        <button [routerLink]="['/my-parkings']">My Parkings</button>
+        <button [routerLink]="['/all-profiles']">Всички профили</button>
+        <button [routerLink]="['/all-bookings']">Всички резервации</button>
+        <button [routerLink]="['/my-parkings']">Моите паркинги</button>
       </ng-container>
 
       <ng-template #userOptions>
@@ -53,7 +53,7 @@
         <button [routerLink]="['/loyalty']">Бонус точки</button>
       </ng-template>
 
-      <button (click)="logout()">Logout</button>
+      <button (click)="logout()">Изход</button>
     </div>
 
   </div>

@@ -3,6 +3,7 @@ package com.tu.sofia.controller;
 import com.tu.sofia.dto.*;
 import com.tu.sofia.model.OrderEntity;
 import com.tu.sofia.model.UserEntity;
+import com.tu.sofia.service.ParkingBookingService;
 import com.tu.sofia.service.ParkingSpaceBookingService;
 import com.tu.sofia.service.UserEntityService;
 import org.springframework.http.HttpStatus;
@@ -28,12 +29,12 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final ParkingSpaceBookingService parkingSpaceBookingService;
+    private final ParkingBookingService parkingBookingService;
 
 
-    public UserController(UserEntityService userEntityService, PasswordEncoder passwordEncoder, ParkingSpaceBookingService parkingSpaceBookingService) {
+    public UserController(UserEntityService userEntityService, PasswordEncoder passwordEncoder, ParkingBookingService parkingBookingService) {
         this.userEntityService = userEntityService;
-        this.parkingSpaceBookingService = parkingSpaceBookingService;
+        this.parkingBookingService = parkingBookingService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -92,11 +93,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-
     @GetMapping("/my-bookings")
-    public ResponseEntity<List<BookingFetchDTO>> getMyBookings(@RequestParam String email) {
-        List<BookingFetchDTO> bookings = parkingSpaceBookingService.getBookingsByEmail(email);
-        return ResponseEntity.ok(bookings);
+    public List<MyBookingsDTO> getMyBookings(@RequestParam String email) {
+        return parkingBookingService.getBookingsByEmail(email);
     }
 
 }

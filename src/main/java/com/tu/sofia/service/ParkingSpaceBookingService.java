@@ -244,23 +244,23 @@ public class ParkingSpaceBookingService {
         return hours * 3;
     }
 
-    public List<AdminBookingDTO> getAllBookings() {
-        return this.orderEntityRepository.findAll()
-                .stream().map(this::convertToAdminDTO).collect(Collectors.toList());
-    }
+//    public List<AdminBookingDTO> getAllBookings() {
+//        return this.orderEntityRepository.findAll()
+//                .stream().map(this::convertToAdminDTO).collect(Collectors.toList());
+//    }
 
-    private AdminBookingDTO convertToAdminDTO(OrderEntity order) {
-        BookingDetails details = order.getBookingDetails();
-        int duration = (int) Duration.between(details.getStart(), details.getEnd()).toHours();
-        String username = (order.getUser() != null && order.getUser().getEmail() != null && !order.getUser().getEmail().isEmpty())
-                ? order.getUser().getEmail()
-                : "Guest User";
-        return new AdminBookingDTO()
-                .setStartTime(details.getStart().toString())
-                .setEndTime(details.getEnd().toString())
-                .setDate(details.getStart().toLocalDate().toString())
-                .setDuration(duration)
-                .setAmount(order.getAmount())
-                .setUsername(username);
-    }
+//    private AdminBookingDTO convertToAdminDTO(OrderEntity order) {
+//        BookingDetails details = order.getBookingDetails();
+//        int duration = (int) Duration.between(details.getStart(), details.getEnd()).toHours();
+//        String username = (order.getUser() != null && order.getUser().getEmail() != null && !order.getUser().getEmail().isEmpty())
+//                ? order.getUser().getEmail()
+//                : "Guest User";
+//        return new AdminBookingDTO()
+//                .setStartTime(details.getStart().toString())
+//                .setEndTime(details.getEnd().toString())
+//                .setDate(details.getStart().toLocalDate().toString())
+//                .setDuration(duration)
+//                .setAmount(order.getAmount())
+//                .setUsername(username);
+//    }
 }

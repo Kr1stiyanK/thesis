@@ -11,7 +11,7 @@ import {CommonModule} from "@angular/common";
   styleUrl: './mybookings.component.css'
 })
 export class MybookingsComponent implements OnInit {
-  bookings: any[] = [];
+  bookings: Booking[] = [];
   currentPage: number = 1;
   pageSize: number = 8;
 
@@ -24,12 +24,17 @@ export class MybookingsComponent implements OnInit {
 
   loadBookings(): void {
     const email = this.dataService.getCurrentUser();
-    this.dataService.getMyBookings(email!).subscribe(data => {
-      this.bookings = data;
+    if (!email) {
+      this.bookings = [];
+      return;
+    }
+
+    this.dataService.getMyBookings(email).subscribe(data => {
+      this.bookings = data ?? [];
     });
   }
 
-  get paginatedBookings(): any[] {
+  get paginatedBookings(): Booking[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     return this.bookings.slice(startIndex, startIndex + this.pageSize);
   }
@@ -48,10 +53,11 @@ export class MybookingsComponent implements OnInit {
 }
 
 export interface Booking {
-  date: string;
+  id: number;
+  parkingName: string;
+  spaceNumber: number;
   startTime: string;
   endTime: string;
-  duration: number;
-  amount: number;
+  amountBgn: number | null;
 }
 

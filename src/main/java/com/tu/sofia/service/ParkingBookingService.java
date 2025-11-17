@@ -1,8 +1,6 @@
 package com.tu.sofia.service;
 
-import com.tu.sofia.dto.BookingSlotDTO;
-import com.tu.sofia.dto.CreateBookingDTO;
-import com.tu.sofia.dto.LoyaltySummaryDTO;
+import com.tu.sofia.dto.*;
 import com.tu.sofia.model.ParkingBookingEntity;
 import com.tu.sofia.model.ParkingEntity;
 import com.tu.sofia.model.UserEntity;
@@ -34,6 +32,13 @@ public class ParkingBookingService {
         this.userEntityService = userEntityService;
     }
 
+    public List<AdminBookingDTO> getAllBookingsForParking(Long parkingId) {
+        return bookingRepo.findByParkingIdOrderByStartTimeDesc(parkingId)
+                .stream()
+                .map(this::toAdminDto)
+                .toList();
+    }
+
     public List<BookingSlotDTO> getBookingsForParkingAndDate(Long parkingId, LocalDate date) {
         LocalDateTime from = date.atStartOfDay();
         LocalDateTime to = date.plusDays(1).atStartOfDay();
@@ -42,6 +47,14 @@ public class ParkingBookingService {
                 .findByParkingIdAndStartTimeBetween(parkingId, from, to)
                 .stream()
                 .map(this::toDto)
+                .toList();
+    }
+
+    public List<MyBookingsDTO> getBookingsByEmail(String email) {
+        List<ParkingBookingEntity> bookings = bookingRepo.findByUser_EmailOrderByStartTimeDesc(email);
+
+        return bookings.stream()
+                .map(this::toMyBookingDto)
                 .toList();
     }
 
@@ -138,5 +151,26 @@ public class ParkingBookingService {
                 .setStartTime(e.getStartTime())
                 .setEndTime(e.getEndTime())
                 .setAmountBgn(e.getAmountBgn());
+    }
+
+    private MyBookingsDTO toMyBookingDto(ParkingBookingEntity e) {
+        return new MyBookingsDTO()
+                .setId(e.getId())
+                .setParkingName(e.getParking() != null ? e.getParking().getName() : null)
+                .setSpaceNumber(e.getSpaceNumber())
+                .setStartTime(e.getStartTime())
+                .setEndTime(e.getEndTime())
+                .setAmountBgn(e.getAmountBgn());
+    }
+
+    private AdminBookingDTO toAdminDto(ParkingBookingEntity e) {
+        return new AdminBookingDTO()
+                .setId(e.getId())
+                .setParkingName(e.getParking().getName())
+                .setSpaceNumber(e.getSpaceNumber())
+                .setStartTime(e.getStartTime())
+                .setEndTime(e.getEndTime())
+                .setAmountBgn(e.getAmountBgn())
+                .setUserEmail(e.getUser() != null ? e.getUser().getEmail() : null);
     }
 }

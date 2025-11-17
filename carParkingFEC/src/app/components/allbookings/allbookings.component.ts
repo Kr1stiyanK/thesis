@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
-import {DataService} from "../../service/data.service";
+import {AdminBookings, DataService, ParkingAdmin} from "../../service/data.service";
 
 @Component({
   selector: 'app-allbookings',
@@ -12,43 +12,85 @@ import {DataService} from "../../service/data.service";
   styleUrl: './allbookings.component.css'
 })
 export class AllbookingsComponent implements OnInit {
-  bookings: any[] = [];
-  pagedBookings: any[] = [];
-  currentPage: number = 1;
-  itemsPerPage: number = 16;
-  totalPages: number = 1;
+  // bookings: any[] = [];
+  // pagedBookings: any[] = [];
+  // currentPage: number = 1;
+  // itemsPerPage: number = 16;
+  // totalPages: number = 1;
+  //
+  // constructor(private ds: DataService) {}
+  //
+  // ngOnInit(): void {
+  //   this.loadBookings();
+  // }
+  //
+  // loadBookings(): void {
+  //   this.ds.getAllBookings().subscribe((data: any[]) => {
+  //     this.bookings = data;
+  //     this.totalPages = Math.ceil(this.bookings.length / this.itemsPerPage);
+  //     this.updatePagedBookings();
+  //   });
+  // }
+  //
+  // updatePagedBookings(): void {
+  //   const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  //   const endIndex = startIndex + this.itemsPerPage;
+  //   this.pagedBookings = this.bookings.slice(startIndex, endIndex);
+  // }
+  //
+  // previousPage(): void {
+  //   if (this.currentPage > 1) {
+  //     this.currentPage--;
+  //     this.updatePagedBookings();
+  //   }
+  // }
+  //
+  // nextPage(): void {
+  //   if (this.currentPage < this.totalPages) {
+  //     this.currentPage++;
+  //     this.updatePagedBookings();
+  //   }
+  // }
+  parkings: ParkingAdmin[] = [];
+  selectedParkingId: number | null = null;
 
-  constructor(private ds: DataService) {}
+  bookings: AdminBookings[] = [];
+  loading = false;
+  error: string | null = null;
 
-  ngOnInit(): void {
-    this.loadBookings();
+  constructor(private ds: DataService) {
   }
 
-  loadBookings(): void {
-    this.ds.getAllBookings().subscribe((data: any[]) => {
-      this.bookings = data;
-      this.totalPages = Math.ceil(this.bookings.length / this.itemsPerPage);
-      this.updatePagedBookings();
+  ngOnInit(): void {
+    // зареждаме само паркингите на админа
+    this.ds.getMyParkings().subscribe({
+      next: res => this.parkings = res,
+      error: err => {
+        console.error(err);
+        this.error = 'Грешка при зареждане на паркингите.';
+      }
     });
   }
 
-  updatePagedBookings(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.pagedBookings = this.bookings.slice(startIndex, endIndex);
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagedBookings();
+  onParkingChange(): void {
+    if (!this.selectedParkingId) {
+      this.bookings = [];
+      return;
     }
-  }
 
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagedBookings();
-    }
+    this.loading = true;
+    this.error = null;
+
+    this.ds.getAllBookingsForParking(this.selectedParkingId).subscribe({
+      next: res => {
+        this.bookings = res ?? [];
+        this.loading = false;
+      },
+      error: err => {
+        console.error(err);
+        this.error = 'Грешка при зареждане на резервациите.';
+        this.loading = false;
+      }
+    });
   }
 }

@@ -1,4 +1,3 @@
-<!-- NAVBAR - показва се само когато showNavbar === true -->
 <nav class="navbar" *ngIf="showNavbar">
   <div class="navbar-left">
     <a class="navbar-brand" [routerLink]="['/profile']">Park Wise</a>
@@ -6,12 +5,6 @@
 
   <div class="navbar-right">
     <a routerLink="/profile" routerLinkActive="active">Профил</a>
-    <a *ngIf="isAdmin" routerLink="/my-parkings" routerLinkActive="active">
-      Моите паркинги
-    </a>
-    <a routerLink="/scheduler" routerLinkActive="active">График</a>
-    <a routerLink="/my-bookings" routerLinkActive="active">Моите резервации</a>
-
     <button class="logout-btn" (click)="logout()">Изход</button>
   </div>
 </nav>

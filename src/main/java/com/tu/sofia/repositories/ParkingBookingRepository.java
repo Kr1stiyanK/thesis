@@ -31,4 +31,8 @@ public interface ParkingBookingRepository extends JpaRepository<ParkingBookingEn
     );
 
     long countByParkingIdAndUserId(Long parkingId, Long userId);
+
+    List<ParkingBookingEntity> findByUser_EmailOrderByStartTimeDesc(String email);
+
+    List<ParkingBookingEntity> findByParkingIdOrderByStartTimeDesc(Long parkingId);
 }
