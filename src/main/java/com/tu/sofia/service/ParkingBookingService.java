@@ -2,8 +2,10 @@ package com.tu.sofia.service;
 
 import com.tu.sofia.dto.BookingSlotDTO;
 import com.tu.sofia.dto.CreateBookingDTO;
+import com.tu.sofia.dto.LoyaltySummaryDTO;
 import com.tu.sofia.model.ParkingBookingEntity;
 import com.tu.sofia.model.ParkingEntity;
+import com.tu.sofia.model.UserEntity;
 import com.tu.sofia.repositories.ParkingBookingRepository;
 import com.tu.sofia.repositories.ParkingRepository;
 import org.springframework.http.HttpStatus;
@@ -22,10 +24,14 @@ import java.util.List;
 public class ParkingBookingService {
     private final ParkingBookingRepository bookingRepo;
     private final ParkingRepository parkingRepo;
+    private final LoyaltyService loyaltyService;
+    private final UserEntityService userEntityService;
 
-    public ParkingBookingService(ParkingBookingRepository bookingRepo, ParkingRepository parkingRepo) {
+    public ParkingBookingService(ParkingBookingRepository bookingRepo, ParkingRepository parkingRepo, LoyaltyService loyaltyService, UserEntityService userEntityService) {
         this.bookingRepo = bookingRepo;
         this.parkingRepo = parkingRepo;
+        this.loyaltyService = loyaltyService;
+        this.userEntityService = userEntityService;
     }
 
     public List<BookingSlotDTO> getBookingsForParkingAndDate(Long parkingId, LocalDate date) {
@@ -39,7 +45,7 @@ public class ParkingBookingService {
                 .toList();
     }
 
-    public BookingSlotDTO createBooking(Long parkingId, CreateBookingDTO dto) {
+    public BookingSlotDTO createBooking(Long parkingId, CreateBookingDTO dto, Long userId) {
         ParkingEntity parking = parkingRepo.findById(parkingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking not found"));
 
@@ -53,8 +59,7 @@ public class ParkingBookingService {
         LocalDateTime end = dto.getEndTime();
 
         if (!end.isAfter(start)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "End time must be after start time");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "End time must be after start time");
         }
 
         if (!Boolean.TRUE.equals(parking.getOpen24Hours())) {
@@ -92,12 +97,34 @@ public class ParkingBookingService {
 
         BigDecimal amount = pricePerHour.multiply(hours);
 
+        if (userId != null && dto.getUseBonus()) {
+            LoyaltySummaryDTO summary = loyaltyService.getSummaryForParking(userId, parkingId);
+
+            if (!summary.isLoyaltyEnabled() || !summary.isCanUseBonus()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough loyalty points");
+            }
+
+            BigDecimal freeHours = BigDecimal.valueOf(summary.getRewardHours() != null ? summary.getRewardHours() : 0);
+            BigDecimal billableHours = hours.subtract(freeHours);
+            if (billableHours.compareTo(BigDecimal.ZERO) < 0) {
+                billableHours = BigDecimal.ZERO;
+            }
+
+            amount = billableHours.multiply(pricePerHour);
+
+            // Записваме, че потребителят е използвал бонус
+            loyaltyService.consumeReward(userId, parkingId);
+        }
+
+        UserEntity customer = userEntityService.getUserById(userId);
+
         ParkingBookingEntity booking = new ParkingBookingEntity()
                 .setParking(parking)
                 .setSpaceNumber(dto.getSpaceNumber())
                 .setStartTime(start)
                 .setEndTime(end)
-                .setAmountBgn(amount);
+                .setAmountBgn(amount)
+                .setUser(customer);
 
         booking = bookingRepo.save(booking);
 

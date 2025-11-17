@@ -207,6 +207,16 @@ export class DataService {
     return this.http.get<BookingSlot[]>(BASE_URL + `api/parkings/${parkingId}/bookings?date=${date}`, { headers });
   }
 
+  getLoyaltyForParking(parkingId: number): Observable<LoyaltySummary> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.get<LoyaltySummary>(BASE_URL + 'api/loyalty/parking/' + parkingId, { headers });
+  }
+
+  getMyLoyalty(): Observable<LoyaltySummary[]> {
+    const headers = DataService.createAuthorizationHeader();
+    return this.http.get<LoyaltySummary[]>(BASE_URL + 'api/loyalty/my', { headers });
+  }
+
   createParkingBooking(parkingId: number, body: { spaceNumber: number; startTime: string; endTime: string }): Observable<BookingSlot> {
     const headers = DataService.createAuthorizationHeader();
     return this.http.post<BookingSlot>(BASE_URL + `api/parkings/${parkingId}/bookings`, body, { headers });
@@ -312,4 +322,17 @@ export interface BookingSlot {
   endTime: string;
   amountBgn?: number;
 }
+
+export interface LoyaltySummary {
+  parkingId: number;
+  parkingName: string;
+  loyaltyEnabled: boolean;
+  points: number;
+  pointsRequired: number | null;
+  rewardHours: number | null;
+  pointsToNextReward: number | null;
+  canUseBonus: boolean;
+  visitsPerPoint?: number;
+}
+
 

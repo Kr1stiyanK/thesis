@@ -6,14 +6,16 @@ public class CreateBookingDTO {
     private Integer spaceNumber;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private boolean useBonus;
 
     public CreateBookingDTO() {
     }
 
-    public CreateBookingDTO(Integer spaceNumber, LocalDateTime startTime, LocalDateTime endTime) {
+    public CreateBookingDTO(Integer spaceNumber, LocalDateTime startTime, LocalDateTime endTime, boolean useBonus) {
         this.spaceNumber = spaceNumber;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.useBonus = useBonus;
     }
 
     public Integer getSpaceNumber() {
@@ -40,6 +42,15 @@ public class CreateBookingDTO {
 
     public CreateBookingDTO setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+        return this;
+    }
+
+    public boolean getUseBonus() {
+        return useBonus;
+    }
+
+    public CreateBookingDTO setUseBonus(boolean useBonus) {
+        this.useBonus = useBonus;
         return this;
     }
 }

@@ -1,0 +1,36 @@
+<div class="loyalty-page" *ngIf="all.length > 0; else noLoyalty">
+  <h2>Бонус точки</h2>
+
+  <label>
+    Избери паркинг:
+    <select [ngModel]="selectedParkingId" (ngModelChange)="onSelect($event)">
+      <option *ngFor="let p of all" [ngValue]="p.parkingId">
+        {{ p.parkingName }}
+      </option>
+    </select>
+  </label>
+
+  <div *ngIf="selected" class="summary">
+    <p>Текущи точки: <strong>{{ selected.points }}</strong></p>
+    <p *ngIf="selected.pointsRequired">
+      Необходими точки за бонус: <strong>{{ selected.pointsRequired }}</strong>
+    </p>
+    <span *ngIf="selected.visitsPerPoint">
+      Една бонус точка се получава след
+      <strong>{{ selected.visitsPerPoint }}</strong> посещения.
+    </span>
+    <p *ngIf="selected.rewardHours">
+      Бонус: <strong>{{ selected.rewardHours }}</strong> ч. безплатен паркинг
+    </p>
+    <p *ngIf="selected.canUseBonus">
+      В момента можеш да използваш бонус.
+    </p>
+    <p *ngIf="!selected.canUseBonus && selected.pointsToNextReward !== null">
+      Остават <strong>{{ selected.pointsToNextReward }}</strong> точки до следващ бонус.
+    </p>
+  </div>
+</div>
+
+<ng-template #noLoyalty>
+  <p>Все още нямаш паркинги с активна бонус програма.</p>
+</ng-template>

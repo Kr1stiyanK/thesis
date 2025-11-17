@@ -1,0 +1,33 @@
+.loyalty-page {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px 24px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  font-family: Arial, sans-serif;
+}
+
+.loyalty-page h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.loyalty-page label {
+  display: block;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.loyalty-page select {
+  width: 100%;
+  max-width: 400px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.loyalty-page .summary {
+  margin-top: 10px;
+  line-height: 1.5;
+}

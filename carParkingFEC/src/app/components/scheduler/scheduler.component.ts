@@ -603,14 +603,14 @@
 //   end: Date;
 // }
 
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   DataService,
   ParkingScheduleMeta,
-  BookingSlot
+  BookingSlot, LoyaltySummary
 } from '../../service/data.service';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {
   BookingConfirmDialogComponent,
   BookingPreviewData
@@ -646,13 +646,17 @@ export class SchedulerComponent implements OnInit {
   pendingStart: Date | null = null;
   pendingEnd: Date | null = null;
 
+  // информация за бонуси за текущия паркинг
+  loyaltyInfo: LoyaltySummary | null = null;
+
   readonly BGN_TO_EUR = 1.95583;
 
   constructor(
     private route: ActivatedRoute,
     private dataService: DataService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.parkingId = Number(this.route.snapshot.queryParamMap.get('parkingId'));
@@ -662,6 +666,7 @@ export class SchedulerComponent implements OnInit {
     }
 
     this.loadMetaAndSchedule();
+    this.loadLoyalty();
   }
 
   // ---------- helpers за форматиране на време ----------
@@ -681,6 +686,18 @@ export class SchedulerComponent implements OnInit {
     const d = date.getDate().toString().padStart(2, '0');
     const hh = hour.toString().padStart(2, '0');
     return `${y}-${m}-${d}T${hh}:00:00`;
+  }
+
+  // -----------------------------------------------------
+
+  private loadLoyalty(): void {
+    this.dataService.getLoyaltyForParking(this.parkingId).subscribe({
+      next: info => this.loyaltyInfo = info,
+      error: err => {
+        console.error('Грешка при зареждане на бонус информацията', err);
+        this.loyaltyInfo = null;
+      }
+    });
   }
 
   // -----------------------------------------------------
@@ -774,17 +791,14 @@ export class SchedulerComponent implements OnInit {
     const slotDay = new Date(slot.start);
     slotDay.setHours(0, 0, 0, 0);
 
-    // Ако денят на слота е в миналото -> минало
     if (slotDay.getTime() < today.getTime()) {
       return true;
     }
 
-    // Ако е в бъдещ ден -> не е минало
     if (slotDay.getTime() > today.getTime()) {
       return false;
     }
 
-    // Ако е днес – гледаме часа
     return slot.start.getTime() <= now.getTime();
   }
 
@@ -815,7 +829,7 @@ export class SchedulerComponent implements OnInit {
       return;
     }
 
-    // ако кликнем на друго място – нова селекция от нулата
+    // друго място – нова селекция
     if (this.selectionSpace !== spaceNumber) {
       this.selectionSpace = spaceNumber;
       this.selectionStartIndex = slotIndex;
@@ -823,27 +837,23 @@ export class SchedulerComponent implements OnInit {
       return;
     }
 
-    // същото място:
-    // ако кликнем по-рано от текущия старт – преместваме началото
+    // ако кликнем по-рано от текущото начало – местим началото
     if (slotIndex < (this.selectionStartIndex ?? 0)) {
       this.selectionStartIndex = slotIndex;
       this.selectionEndIndex = slotIndex;
       return;
     }
 
-    // втори (или трети) клик напред или върху същия слот:
+    // втори/трети клик напред
     this.selectionEndIndex = slotIndex;
 
     const startIdx = this.selectionStartIndex!;
     const endIdx = this.selectionEndIndex!;
 
-    // нормализираме, за всеки случай
     const fromIdx = Math.min(startIdx, endIdx);
     const toIdx = Math.max(startIdx, endIdx);
 
     const startSlot = this.timeSlots[fromIdx];
-
-    // ВАЖНО: използваме ИНДЕКС + 1, за да получим правилна продължителност
     const endHour = this.timeSlots[toIdx].hour + 1;
 
     this.pendingSpace = spaceNumber;
@@ -860,7 +870,9 @@ export class SchedulerComponent implements OnInit {
       startTime: this.pendingStart,
       endTime: this.pendingEnd,
       totalPrice: totalPrice,
-      cardPaymentEnabled: this.parkingMeta.cardPaymentEnabled
+      cardPaymentEnabled: this.parkingMeta.cardPaymentEnabled,
+      pricePerHourBgn: this.parkingMeta.pricePerHourBgn || 0,
+      loyaltyInfo: this.loyaltyInfo || undefined
     };
 
     this.dialogVisible = true;
@@ -874,46 +886,72 @@ export class SchedulerComponent implements OnInit {
     this.clearSelection();
   }
 
-  onDialogConfirm(event: { paymentMethod: 'cash' | 'card' }): void {
+  onDialogConfirm(event: { paymentMethod: 'cash' | 'card'; useBonus: boolean; finalPriceBgn: number }): void {
     if (!this.pendingStart || !this.pendingEnd || !this.pendingSpace) {
       this.onDialogCancel();
       return;
     }
 
-    const totalPrice = this.calculateTotalPrice(this.pendingStart, this.pendingEnd);
+    const originalTotal = this.calculateTotalPrice(this.pendingStart, this.pendingEnd);
+    const effectiveTotal = event.finalPriceBgn ?? originalTotal;
 
-    // взимаме часовете от pendingStart/pendingEnd
     const startHour = this.pendingStart.getHours();
     const endHour = this.pendingEnd.getHours();
 
-    // строим ЛОКАЛНИ datetime string-ове (без Z),
-    // за да се мапнат директно към LocalDateTime в Spring
     const startStr = this.buildLocalDateTimeString(this.selectedDate, startHour);
     const endStr = this.buildLocalDateTimeString(this.selectedDate, endHour);
 
-    const bookingData = {
+    const bookingData: any = {
       parkingId: this.parkingId,
       spaceNumber: this.pendingSpace,
       startTime: startStr,
-      endTime: endStr
+      endTime: endStr,
+      useBonus: event.useBonus
     };
 
+    // 1) Ако крайната цена е 0 → никакво плащане, директно създаваме букинг
+    if (effectiveTotal === 0) {
+      this.dataService.createParkingBooking(this.parkingId, bookingData)
+        .subscribe({
+          next: () => {
+            this.loadBookings();
+            this.loadLoyalty();
+            this.onDialogCancel();
+          },
+          error: (err) => {
+            alert('Резервацията не може да бъде създадена.');
+            console.error(err);
+            this.onDialogCancel();
+          }
+        });
+      return;
+    }
+
+    // 2) Плащане с карта (цена > 0) → към /payment с намалената сума
     if (event.paymentMethod === 'card') {
       this.dialogVisible = false;
 
       this.router.navigate(
         ['/payment'],
-        { state: { bookingDetails: bookingData, totalPrice } }
+        {
+          state: {
+            bookingDetails: bookingData,
+            totalPrice: effectiveTotal,
+            useBonus: event.useBonus
+          }
+        }
       );
 
       this.clearSelection();
       return;
     }
 
+    // 3) Плащане в брой (цена > 0)
     this.dataService.createParkingBooking(this.parkingId, bookingData)
       .subscribe({
         next: () => {
           this.loadBookings();
+          this.loadLoyalty();
           this.onDialogCancel();
         },
         error: (err) => {

@@ -47,8 +47,44 @@
 
 
 <div class="payment-form">
-  <h2>Invoice</h2>
-  <p class="total-price">Обща цена: {{ totalPrice }} BGN</p>
+  <h2>Фактура</h2>
+  <div class="payment-summary">
+    <p>
+      Обща цена:
+      <strong>
+        {{ finalPriceBgn | number:'1.2-2' }} лв.
+        / {{ finalPriceEur | number:'1.2-2' }} €
+      </strong>
+    </p>
+
+    <p *ngIf="discountBgn > 0">
+      (Първоначална цена: {{ totalPrice | number:'1.2-2' }} лв.,
+      отстъпка от бонус: {{ discountBgn | number:'1.2-2' }} лв.)
+    </p>
+
+    <!-- Бонус инфото, което вече имаш -->
+    <div *ngIf="loyaltyInfo && loyaltyInfo.loyaltyEnabled">
+      <p>
+        Бонус точки за <strong>{{ loyaltyInfo.parkingName }}</strong>:
+        <strong>{{ loyaltyInfo.points }}</strong>
+      </p>
+
+      <p *ngIf="loyaltyInfo.canUseBonus">
+        Можеш да използваш бонус за
+        <strong>{{ loyaltyInfo.rewardHours }}</strong> ч. безплатен паркинг.
+      </p>
+
+      <p *ngIf="!loyaltyInfo.canUseBonus && loyaltyInfo.pointsToNextReward !== null">
+        Остават още
+        <strong>{{ loyaltyInfo.pointsToNextReward }}</strong> точки до следващ бонус.
+      </p>
+
+      <label *ngIf="loyaltyInfo.canUseBonus" class="use-bonus-label">
+        <input type="checkbox" [(ngModel)]="useBonus">
+        Използвай бонус за тази резервация
+      </label>
+    </div>
+  </div>
   <form [formGroup]="paymentForm" (ngSubmit)="onPaymentSubmit()">
     <div class="card-icons">
       <img src="assets/visa.png" alt="Visa">

@@ -5,6 +5,8 @@ import com.tu.sofia.dto.CreateBookingDTO;
 import com.tu.sofia.repositories.UserEntityRepository;
 import com.tu.sofia.service.ParkingBookingService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -31,8 +33,19 @@ public class ParkingBookingController {
 
     @PostMapping
     public BookingSlotDTO createBooking(
+            @AuthenticationPrincipal UserDetails principal,
             @PathVariable Long parkingId,
             @RequestBody CreateBookingDTO dto) {
-        return bookingService.createBooking(parkingId, dto);
+        if (principal == null) {
+            // гост – не може useBonus
+            dto.setUseBonus(false);
+            return bookingService.createBooking(parkingId, dto, null);
+        }
+
+        Long userId = userRepository.findByEmail(principal.getUsername())
+                .orElseThrow()
+                .getId();
+
+        return bookingService.createBooking(parkingId, dto, userId);
     }
 }

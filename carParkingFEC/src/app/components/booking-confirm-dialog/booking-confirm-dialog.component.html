@@ -14,11 +14,38 @@
         {{ formattedTime(data.endTime) }}
       </p>
       <div class="info-row price">
-        <label>Обща цена:</label>
-        <strong>
-          {{ data.totalPrice | number:'1.2-2' }} лв.
-          / {{ priceInEur | number:'1.2-2' }} €
-        </strong>
+        <p>
+          Обща цена:
+          <strong>
+            {{ finalPriceBgn | number:'1.2-2' }} лв.
+            / {{ finalPriceEur | number:'1.2-2' }} €
+          </strong>
+        </p>
+
+        <div *ngIf="discountBgn > 0" class="bonus-summary">
+          <small>
+            Първоначална цена: {{ data.totalPrice | number:'1.2-2' }} лв.,
+            отстъпка от бонус: {{ discountBgn | number:'1.2-2' }} лв.
+          </small>
+        </div>
+        <div *ngIf="hasBonusProgram" class="bonus-block">
+          <p *ngIf="canUseBonus">
+            Имаш право на
+            <strong>{{ rewardHours }}</strong> ч. безплатен паркинг от бонус програмата.
+          </p>
+
+          <p *ngIf="!canUseBonus">
+            Имаш активна бонус програма с
+            <strong>{{ rewardHours }}</strong> ч. безплатен паркинг,
+            но все още нямаш достатъчно точки, за да я използваш.
+          </p>
+
+          <label class="use-bonus-label" *ngIf="canUseBonus">
+            <input type="checkbox" [(ngModel)]="useBonus">
+            Използвай бонус за тази резервация
+          </label>
+        </div>
+
       </div>
 
       <div class="payment-section">

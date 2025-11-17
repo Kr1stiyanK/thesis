@@ -17,6 +17,7 @@ import {MapComponent} from "./components/map/map.component";
 import {ForgotpasswordComponent} from "./components/forgotpassword/forgotpassword.component";
 import {ResetpasswordComponent} from "./components/resetpassword/resetpassword.component";
 import {AdminParkingsComponent} from "./components/admin-parkings/admin-parkings.component";
+import {LoyaltyPointsComponent} from "./components/loyalty-points/loyalty-points.component";
 
 
 export const routes: Routes = [
@@ -37,6 +38,7 @@ export const routes: Routes = [
   {path: 'forgot-password', component: ForgotpasswordComponent},
   {path: 'reset-password', component: ResetpasswordComponent},
   {path: 'payment-edit', component: PaymentEditComponent},
+  {path: 'loyalty', component: LoyaltyPointsComponent, canActivate: [AuthGuard]},
   {path: '', redirectTo: '', pathMatch: 'full'},
   {path: '**', redirectTo: ''},
 ];

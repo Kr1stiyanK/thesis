@@ -66,6 +66,10 @@ public class UserEntityService implements UserDetailsService {
         return new User(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getRole().name())));
     }
 
+    public UserEntity getUserById(Long id) {
+        return userRepo.findById(id).orElse(null);
+    }
+
     public UserEntity loadByUsername(String email) {
         return this.userRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Customer not found with email: " + email));
     }
