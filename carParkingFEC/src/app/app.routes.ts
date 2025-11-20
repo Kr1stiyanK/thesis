@@ -20,12 +20,14 @@ import {AdminParkingsComponent} from "./components/admin-parkings/admin-parkings
 import {LoyaltyPointsComponent} from "./components/loyalty-points/loyalty-points.component";
 import {ParkingBookingsComponent} from "./components/parkingbookings/parking-bookings.component";
 import {QuickBookingSelectComponent} from "./components/quick-booking-select/quick-booking-select.component";
+import {AppActivateAccountComponent} from "./components/app-activate-account/app-activate-account.component";
 
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
+  {path: 'activate-account', component: AppActivateAccountComponent},
   {path: 'quick-booking', component: QuickBookingComponent},
   {path: 'quick-booking-select', component: QuickBookingSelectComponent},
   {path: 'booking-success', component: BookingSuccessComponent},

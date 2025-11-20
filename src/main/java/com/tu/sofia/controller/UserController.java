@@ -2,6 +2,9 @@ package com.tu.sofia.controller;
 
 import com.tu.sofia.dto.*;
 import com.tu.sofia.model.UserEntity;
+import com.tu.sofia.model.VerificationToken;
+import com.tu.sofia.repositories.UserEntityRepository;
+import com.tu.sofia.repositories.VerificationTokenRepository;
 import com.tu.sofia.service.ParkingBookingService;
 import com.tu.sofia.service.UserEntityService;
 import org.springframework.http.HttpStatus;
@@ -12,7 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,14 +30,20 @@ public class UserController {
 
     private final UserEntityService userEntityService;
 
+    private final UserEntityRepository userRepo;
+
     private final PasswordEncoder passwordEncoder;
 
     private final ParkingBookingService parkingBookingService;
 
+    private final VerificationTokenRepository tokenRepo;
 
-    public UserController(UserEntityService userEntityService, PasswordEncoder passwordEncoder, ParkingBookingService parkingBookingService) {
+
+    public UserController(UserEntityService userEntityService, PasswordEncoder passwordEncoder, UserEntityRepository userRepo, ParkingBookingService parkingBookingService, VerificationTokenRepository tokenRepo) {
         this.userEntityService = userEntityService;
+        this.userRepo = userRepo;
         this.parkingBookingService = parkingBookingService;
+        this.tokenRepo = tokenRepo;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -96,4 +107,24 @@ public class UserController {
         return parkingBookingService.getBookingsByEmail(email);
     }
 
+    @GetMapping("/auth/verify")
+    public void verify(@RequestParam String token) {
+        VerificationToken verification = tokenRepo.findByToken(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Невалиден линк."));
+
+        if (verification.isUsed()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Този линк вече е използван.");
+        }
+
+        if (verification.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Линкът е изтекъл.");
+        }
+
+        UserEntity user = verification.getUser();
+        user.setEnabled(true);
+        userRepo.save(user);
+
+        verification.setUsed(true);
+        tokenRepo.save(verification);
+    }
 }

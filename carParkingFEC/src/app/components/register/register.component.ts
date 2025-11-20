@@ -42,16 +42,21 @@ export class RegisterComponent implements OnInit {
   }
 
   submitForm() {
-    this.service.register(this.registerForm.value).subscribe(
-      (response) => {
-        if (response.id != null) {
-          this.router.navigateByUrl('/login');
-        }
-      }, (error => {
-        alert('Registration failed: ' + error.message);
-      })
-    )
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.service.register(this.registerForm.value).subscribe({
+      next: (response) => {
+        alert('Регистрацията е успешна. Моля, проверете имейла си за линк за активация на профила.');
+        this.router.navigateByUrl('/login');
+      },
+      error: (error) => {
+        const msg = 'Регистрацията не беше успешна.';
+
+        alert(msg);
+      }
+    });
   }
-
-
 }

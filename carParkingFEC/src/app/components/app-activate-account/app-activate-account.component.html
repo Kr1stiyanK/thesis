@@ -1,0 +1,11 @@
+<div class="activation-container">
+  <h2>Активиране на профил</h2>
+
+  <p *ngIf="loading">Моля, изчакайте...</p>
+
+  <p *ngIf="!loading">{{ message }}</p>
+
+  <button *ngIf="!loading" class="btn primary" (click)="goToLogin()">
+    Към вход
+  </button>
+</div>

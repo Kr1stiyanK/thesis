@@ -8,11 +8,15 @@ import com.tu.sofia.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -31,24 +35,55 @@ public class LoginController {
         this.jwtUtil = jwtUtil;
     }
 
+//    @PostMapping
+//    public ResponseEntity<LoginResponseDTO> login(@RequestBody UserLoginDTO userLoginDTO) {
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
+//            );
+//        } catch (AuthenticationException e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        UserDetails userDetails;
+//        try {
+//            userDetails = userEntityService.loadUserByUsername(userLoginDTO.getEmail());
+//        } catch (UsernameNotFoundException exception) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        UserEntity user = userEntityService.loadByUsername(userLoginDTO.getEmail());
+//        String jwtToken = jwtUtil.generateToken(userLoginDTO.getEmail(), user.getId());
+//
+//        return ResponseEntity.ok(new LoginResponseDTO(jwtToken));
+//    }
+
     @PostMapping
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody UserLoginDTO userLoginDTO) {
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
+                    new UsernamePasswordAuthenticationToken(
+                            userLoginDTO.getEmail(),
+                            userLoginDTO.getPassword()
+                    )
             );
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (DisabledException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "USER_NOT_ENABLED"));
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "INVALID_CREDENTIALS"));
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "LOGIN_FAILED"));
         }
 
-        UserDetails userDetails;
-        try {
-            userDetails = userEntityService.loadUserByUsername(userLoginDTO.getEmail());
-        } catch (UsernameNotFoundException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        UserDetails userDetails = userEntityService.loadUserByUsername(userLoginDTO.getEmail());
         UserEntity user = userEntityService.loadByUsername(userLoginDTO.getEmail());
-        String jwtToken = jwtUtil.generateToken(userLoginDTO.getEmail(), user.getId());
+
+        String jwtToken = jwtUtil.generateToken(
+                userLoginDTO.getEmail(),
+                user.getId()
+        );
 
         return ResponseEntity.ok(new LoginResponseDTO(jwtToken));
     }

@@ -35,11 +35,8 @@ export class DataService {
     return this.http.post(BASE_URL + 'login', loginRequest)
   }
 
-  getEvents(from: DayPilot.Date, to: DayPilot.Date): Observable<any[]> {
-    const headers = DataService.createAuthorizationHeader();
-    const fromIso = from.toString();
-    const toIso = to.toString();
-    return this.http.get<any[]>(BASE_URL + `api/bookings?from=${fromIso}&to=${toIso}`, {headers});
+  verifyAccount(token: string): Observable<void> {
+    return this.http.get<void>(BASE_URL + 'api/auth/verify', {params: {token}});
   }
 
   getResources(): Observable<any[]> {
@@ -55,16 +52,6 @@ export class DataService {
   updateEvent(data: EventEditParams): Observable<any> {
     const headers = DataService.createAuthorizationHeader();
     return this.http.post<any>(BASE_URL + 'api/parkingspaces/edit', data, {headers});
-  }
-
-  moveEvent(data: EventMoveParams): Observable<any> {
-    const headers = DataService.createAuthorizationHeader();
-    return this.http.post<any>(BASE_URL + 'api/parkingspaces/move', data, {headers});
-  }
-
-  deleteEvent(data: EventDeleteParams): Observable<any> {
-    const headers = DataService.createAuthorizationHeader();
-    return this.http.post<any>(BASE_URL + 'api/parkingspaces/delete', data, {headers});
   }
 
   checkParkingSpaceAvailability(data: CheckAvailabilityParams): Observable<{ available: boolean }> {

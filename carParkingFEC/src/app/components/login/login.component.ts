@@ -34,37 +34,84 @@ export class LoginComponent implements OnInit {
     this.parkingIdFromHome = pid ? Number(pid) : null;
   }
 
+  // submitForm() {
+  //   this.service.login(this.loginForm.value).subscribe(
+  //     (response) => {
+  //       if (response.jwtToken != null) {
+  //         const jwtToken = response.jwtToken;
+  //         localStorage.setItem('jwtToken', jwtToken);
+  //
+  //         const target = this.redirectUrl || '/profile';
+  //         this.router.navigate([target],{queryParams: {parkingId: this.parkingIdFromHome}});
+  //       }
+  //     },
+  //     (error) => {
+  //       alert('Login failed: ' + error.message);
+  //     }
+  //   );
+  //
+  //
+  //   this.service.login(this.loginForm.value).subscribe({
+  //     next: () => {
+  //       // ако сме дошли от "Резервирай тук" → директно към графика на този паркинг
+  //       if (this.parkingIdFromHome) {
+  //         this.router.navigate(['/scheduler'], {
+  //           queryParams: {parkingId: this.parkingIdFromHome}
+  //         });
+  //       } else {
+  //         this.router.navigate(['/profile']);
+  //       }
+  //     },
+  //     error: err => {
+  //       console.error(err);
+  //       alert('Грешка при вход.');
+  //     }
+  //   });
+  // }
   submitForm() {
-    this.service.login(this.loginForm.value).subscribe(
-      (response) => {
-        if (response.jwtToken != null) {
-          const jwtToken = response.jwtToken;
-          localStorage.setItem('jwtToken', jwtToken);
-
-          const target = this.redirectUrl || '/profile';
-          this.router.navigate([target],{queryParams: {parkingId: this.parkingIdFromHome}});
-        }
-      },
-      (error) => {
-        alert('Login failed: ' + error.message);
-      }
-    );
-
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
 
     this.service.login(this.loginForm.value).subscribe({
-      next: () => {
-        // ако сме дошли от "Резервирай тук" → директно към графика на този паркинг
-        if (this.parkingIdFromHome) {
-          this.router.navigate(['/scheduler'], {
-            queryParams: {parkingId: this.parkingIdFromHome}
-          });
-        } else {
-          this.router.navigate(['/profile']);
+      next: (response) => {
+        const jwtToken = response?.jwtToken;
+        if (!jwtToken) {
+          alert('Възникна грешка при вход.');
+          return;
         }
+        localStorage.setItem('jwtToken', jwtToken);
+
+        let target = '/profile';
+        let extras: any = {};
+
+        if (this.redirectUrl) {
+          target = this.redirectUrl;
+          if (this.parkingIdFromHome) {
+            extras = { queryParams: { parkingId: this.parkingIdFromHome } };
+          }
+        } else if (this.parkingIdFromHome) {
+          target = '/scheduler';
+          extras = { queryParams: { parkingId: this.parkingIdFromHome } };
+        }
+
+        this.router.navigate([target], extras);
       },
-      error: err => {
-        console.error(err);
-        alert('Грешка при вход.');
+      error: (error) => {
+        const msg = error?.error?.message;
+
+        if (msg === 'USER_NOT_ENABLED') {
+          alert('Профилът Ви не е активиран. Моля, проверете имейла си.');
+          return;
+        }
+
+        if (msg === 'INVALID_CREDENTIALS') {
+          alert('Грешен имейл или парола.');
+          return;
+        }
+
+        alert('Възникна грешка при вход.');
       }
     });
   }

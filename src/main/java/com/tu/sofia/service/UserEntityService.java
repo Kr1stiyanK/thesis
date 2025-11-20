@@ -4,8 +4,11 @@ import com.tu.sofia.dto.UserRegistrationDTO;
 import com.tu.sofia.enums.UserRoleEnum;
 import com.tu.sofia.model.UserEntity;
 import com.tu.sofia.model.UserRoleEntity;
+import com.tu.sofia.model.VerificationToken;
 import com.tu.sofia.repositories.UserEntityRepository;
 import com.tu.sofia.repositories.UserRoleRepository;
+import com.tu.sofia.repositories.VerificationTokenRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,9 +18,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collector;
 
 @Service
@@ -30,16 +35,22 @@ public class UserEntityService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserEntityService(UserEntityRepository userRepo, UserRoleRepository roleRepo, PasswordEncoder passwordEncoder) {
+    private final VerificationTokenRepository tokenRepo;
+
+    private final MailService mailService;
+
+    public UserEntityService(UserEntityRepository userRepo, UserRoleRepository roleRepo, PasswordEncoder passwordEncoder, VerificationTokenRepository tokenRepo, MailService mailService) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
         this.passwordEncoder = passwordEncoder;
+        this.tokenRepo = tokenRepo;
+        this.mailService = mailService;
     }
 
-
+    @Transactional
     public UserEntity createCustomer(UserRegistrationDTO signupRequest) {
         if (userRepo.existsByEmail(signupRequest.getEmail())) {
-            return null;
+            throw new RuntimeException("Email already taken");
         }
 
         UserRoleEntity role = roleRepo.findByRole(UserRoleEnum.USER);
@@ -54,8 +65,19 @@ public class UserEntityService implements UserDetailsService {
                 .setPassword(passwordEncoder.encode(signupRequest.getPassword()))
                 .setRole(role);
 
-        UserEntity createdCustomer = userRepo.save(customer);
-        return createdCustomer;
+        userRepo.save(customer);
+        String tokenValue = UUID.randomUUID().toString();
+        VerificationToken token = new VerificationToken()
+                .setToken(tokenValue)
+                .setUser(customer)
+                .setExpiresAt(LocalDateTime.now().plusMinutes(3))
+                .setUsed(false);
+
+        tokenRepo.save(token);
+
+        mailService.sendVerificationEmail(customer, tokenValue);
+
+        return customer;
     }
 
 
@@ -63,7 +85,16 @@ public class UserEntityService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity user = this.userRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Customer not found with email: " + email));
 
-        return new User(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getRole().name())));
+//        return new User(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getRole().name())));
+        return User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getRole().name())))
+                .disabled(!user.isEnabled())
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .build();
     }
 
     public UserEntity getUserById(Long id) {

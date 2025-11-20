@@ -24,6 +24,10 @@ public class UserEntity {
     @JoinColumn(name = "role_id")
     private UserRoleEntity role;
 
+    @Column(nullable = false)
+    private boolean enabled = false;
+
+
     public Long getId() {
         return id;
     }
@@ -67,6 +71,15 @@ public class UserEntity {
 
     public UserEntity setRole(UserRoleEntity userRoles) {
         this.role = userRoles;
+        return this;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public UserEntity setEnabled(boolean enabled) {
+        this.enabled = enabled;
         return this;
     }
 }
