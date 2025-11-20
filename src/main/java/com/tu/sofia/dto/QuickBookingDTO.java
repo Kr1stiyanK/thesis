@@ -4,10 +4,9 @@ import java.time.LocalDateTime;
 
 public class QuickBookingDTO {
 
+    private Long parkingId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String paymentMethod;
-    private Double amount;
 
 
     public LocalDateTime getStartTime() {
@@ -28,21 +27,12 @@ public class QuickBookingDTO {
         return this;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public Long getParkingId() {
+        return parkingId;
     }
 
-    public QuickBookingDTO setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-        return this;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public QuickBookingDTO setAmount(Double amount) {
-        this.amount = amount;
+    public QuickBookingDTO setParkingId(Long parkingId) {
+        this.parkingId = parkingId;
         return this;
     }
 }

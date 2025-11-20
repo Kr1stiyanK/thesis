@@ -25,23 +25,12 @@ public class BookingDetails {
     @Column(name = "book_end")
     private LocalDateTime end;
 
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name = "resource_id")
-//    private ParkingSpaceEntity resource;
-
-
     @Column(name = "user_id")
     private Long userId;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "bookingDetails", orphanRemoval = true)
     private OrderEntity order;
-
-//    @JsonProperty("resource")
-//    public Long getParkingSpaceId() {
-//        return resource.getId();
-//    }
 
     public String getText() {
         return text;
@@ -88,21 +77,21 @@ public class BookingDetails {
         return this;
     }
 
-//    public ParkingSpaceEntity getResource() {
-//        return resource;
-//    }
-//
-//    public BookingDetails setResource(ParkingSpaceEntity parkingSpaceEntity) {
-//        this.resource = parkingSpaceEntity;
-//        return this;
-//    }
-
     public OrderEntity getOrder() {
         return order;
     }
 
     public BookingDetails setOrder(OrderEntity order) {
         this.order = order;
+        return this;
+    }
+
+    public ParkingEntity getParking() {
+        return parking;
+    }
+
+    public BookingDetails setParking(ParkingEntity parking) {
+        this.parking = parking;
         return this;
     }
 }

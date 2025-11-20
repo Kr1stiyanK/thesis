@@ -9,17 +9,7 @@ import java.util.List;
 
 @Service
 public class ParkingService {
-    //    private final ParkingSpaceRepository parkingSpaceRepository;
     private final ParkingRepository parkingRepository;
-//    private final ParkingSpaceBookingRepository parkingSpaceBookingRepository;
-
-//    public ParkingService(ParkingSpaceRepository parkingSpaceRepository, ParkingRepository parkingRepository, ParkingSpaceBookingRepository parkingSpaceBookingRepository) {
-//        this.parkingSpaceRepository = parkingSpaceRepository;
-//        this.parkingRepository = parkingRepository;
-//        this.parkingSpaceBookingRepository = parkingSpaceBookingRepository;
-//    }
-
-
     public ParkingService(ParkingRepository parkingRepository) {
         this.parkingRepository = parkingRepository;
     }

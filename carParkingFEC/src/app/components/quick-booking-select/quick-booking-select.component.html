@@ -1,0 +1,31 @@
+<div class="quick-select-container">
+
+  <h2>Бърза резервация – избор на паркинг</h2>
+
+  <div *ngIf="loading">Зареждане на паркинги...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!loading && !error">
+
+    <label for="parkingSelect" class="required">Изберете паркинг:</label>
+    <select id="parkingSelect" (change)="onParkingChange($event)">
+    <option value="">-- избери паркинг --</option>
+      <option *ngFor="let p of parkings" [value]="p.id">
+        {{ p.name }} – {{ p.address }}
+      </option>
+    </select>
+
+    <div class="actions">
+      <button class="btn secondary"
+              type="button"
+              (click)="goHome()">
+        Назад към начало
+      </button>
+
+      <button class="btn primary"
+              [disabled]="!selectedParkingId"
+              (click)="goNext()">
+        Продължи
+      </button>
+    </div>
+  </div>
+</div>

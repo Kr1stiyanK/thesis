@@ -1,27 +1,27 @@
 <div class="container">
-  <h2>Register</h2>
+  <h2>Регистрация</h2>
   <form [formGroup]="registerForm" (ngSubmit)=submitForm()>
 
     <div class="form-group">
-      <label for="name" class="required">Name</label>
+      <label for="name" class="required">Име</label>
       <input type="text" class="form-control" id="name" formControlName="name" />
     </div>
 
     <div class="form-group">
-      <label for="email" class="required">Email</label>
+      <label for="email" class="required">Имейл</label>
       <input type="email" class="form-control" id="email" formControlName="email" />
     </div>
 
     <div class="form-group">
-      <label for="password" class="required">Password</label>
+      <label for="password" class="required">Парола</label>
       <input type="password" class="form-control" id="password" formControlName="password" />
     </div>
 
     <div class="form-group">
-      <label for="confirmPassword" class="required">Confirm Password</label>
+      <label for="confirmPassword" class="required">Потвърди парола</label>
       <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" />
     </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Register</button>
+    <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Регистрация</button>
   </form>
 </div>

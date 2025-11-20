@@ -4,6 +4,7 @@ import com.tu.sofia.dto.BookingSlotDTO;
 import com.tu.sofia.dto.ParkingHomeDTO;
 import com.tu.sofia.dto.ParkingScheduleMetaDTO;
 import com.tu.sofia.model.ParkingEntity;
+import com.tu.sofia.repositories.ParkingBookingRepository;
 import com.tu.sofia.repositories.ParkingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,21 +21,27 @@ public class ParkingController {
 
     private final ParkingRepository parkingRepository;
 
-    public ParkingController(ParkingRepository parkingRepository) {
+    private final ParkingBookingRepository parkingBookingRepository;
+
+    public ParkingController(ParkingRepository parkingRepository, ParkingBookingRepository parkingBookingRepository) {
         this.parkingRepository = parkingRepository;
+        this.parkingBookingRepository = parkingBookingRepository;
     }
 
 
     @GetMapping
     public List<ParkingHomeDTO> getAllForHomePage() {
         List<ParkingEntity> parkingEntities = parkingRepository.findAll();
+        LocalDateTime now = LocalDateTime.now();
         return parkingEntities.stream()
-                .map(this::toHomeDto)
+                .map(e -> toHomeDto(e, now))
                 .toList();
     }
 
-    private ParkingHomeDTO toHomeDto(ParkingEntity e) {
-//        int freeSpaces = parkingRepository.countFreeSpacesForParking(e.getId()); // какъвто ти е методът
+    private ParkingHomeDTO toHomeDto(ParkingEntity e, LocalDateTime now) {
+        long occupiedNow = parkingBookingRepository.countActiveBookingsForParking(e.getId(), now);
+
+        int freeSpaces = (int) Math.max(0, e.getSpacesCount() - occupiedNow);
 
         return new ParkingHomeDTO()
                 .setId(e.getId())
@@ -42,7 +49,7 @@ public class ParkingController {
                 .setCity(e.getCity())
                 .setAddress(e.getAddress())
                 .setSpacesCount(e.getSpacesCount())
-                .setFreeSpaces(e.getSpacesCount()) // TODO: да се добави реална логика за свободни места
+                .setFreeSpaces(freeSpaces)
                 .setPricePerHourBgn(e.getPricePerHourBgn())
                 .setCardPaymentEnabled(Boolean.TRUE.equals(e.getCardPaymentEnabled()))
                 .setLoyaltyEnabled(Boolean.TRUE.equals(e.getLoyaltyEnabled()))

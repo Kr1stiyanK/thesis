@@ -18,6 +18,8 @@ import {ForgotpasswordComponent} from "./components/forgotpassword/forgotpasswor
 import {ResetpasswordComponent} from "./components/resetpassword/resetpassword.component";
 import {AdminParkingsComponent} from "./components/admin-parkings/admin-parkings.component";
 import {LoyaltyPointsComponent} from "./components/loyalty-points/loyalty-points.component";
+import {ParkingBookingsComponent} from "./components/parkingbookings/parking-bookings.component";
+import {QuickBookingSelectComponent} from "./components/quick-booking-select/quick-booking-select.component";
 
 
 export const routes: Routes = [
@@ -25,6 +27,7 @@ export const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'quick-booking', component: QuickBookingComponent},
+  {path: 'quick-booking-select', component: QuickBookingSelectComponent},
   {path: 'booking-success', component: BookingSuccessComponent},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'profile-edit', component: ProfileEditComponent, canActivate: [AuthGuard]},
@@ -39,6 +42,7 @@ export const routes: Routes = [
   {path: 'reset-password', component: ResetpasswordComponent},
   {path: 'payment-edit', component: PaymentEditComponent},
   {path: 'loyalty', component: LoyaltyPointsComponent, canActivate: [AuthGuard]},
+  {path: 'parking-bookings', component: ParkingBookingsComponent, canActivate: [AuthGuard]},
   {path: '', redirectTo: '', pathMatch: 'full'},
   {path: '**', redirectTo: ''},
 ];

@@ -13,3 +13,5 @@ spring:
 
 server:
   port: ${port:8081}
+app:
+  guest-user-id: 2

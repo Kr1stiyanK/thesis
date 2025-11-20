@@ -93,60 +93,89 @@
 /*}*/
 
 
-.container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
+/* общ контейнер – центриране и фон */
+.quick-booking-container {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 24px 28px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
 }
 
-h2 {
+/* заглавие */
+.quick-booking-container h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 0;
+  margin-bottom: 24px;
 }
 
-.form-item {
-  margin-bottom: 15px;
+/* формата да заема цялата ширина */
+.quick-booking-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+/* групите с полета */
+.form-group {
+  display: flex;
+  flex-direction: column;
 }
 
-input, select {
-  width: 100%;
-  padding: 8px;
+/* label + червена звездичка */
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.form-group label.required::after {
+  content: " *";
+  color: red;
+  margin-left: 3px;
+}
+
+/* инпути */
+.form-group input[type="date"],
+.form-group input[type="time"] {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
   box-sizing: border-box;
 }
 
-button {
+/* бутон */
+.btn.primary {
+  margin-top: 8px;
   width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
   border: none;
-  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-button[disabled] {
-  background-color: #ccc;
+.btn.primary:hover {
+  background-color: #0064d1;
+  transform: translateY(-1px);
 }
 
-button:not([disabled]):hover {
-  background-color: #0056b3;
+.btn.primary:disabled {
+  background-color: #a0c7ff;
+  cursor: not-allowed;
 }
 
-.error {
-  color: red;
-  font-size: 12px;
-}
-
-p {
-  text-align: center;
+/* малко респонсив */
+@media (max-width: 600px) {
+  .quick-booking-container {
+    margin: 20px 12px;
+    padding: 20px 16px;
+  }
 }
 

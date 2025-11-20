@@ -1,56 +1,63 @@
-<div class="container">
-  <h2>Quick Booking</h2>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="form-item">
-      <label for="date">Date:</label>
-      <input id="date" formControlName="date" type="date">
-      <div *ngIf="form.controls['date'].invalid && (form.controls['date'].dirty || form.controls['date'].touched)">
-        <small class="error">Date is required and cannot be in the past</small>
-      </div>
+<div class="quick-booking-container">
+  <h2>Бърза резервация (гост)</h2>
+
+  <div class="parking-meta" *ngIf="parkingMeta">
+    <h3>{{ parkingMeta.name }}</h3>
+    <p>Брой места: {{ parkingMeta.spacesCount }}</p>
+
+    <p *ngIf="parkingMeta.open24Hours">Работно време: 24/7</p>
+    <p *ngIf="!parkingMeta.open24Hours">
+      Работно време: {{ parkingMeta.openingTime }} – {{ parkingMeta.closingTime }}
+    </p>
+
+    <p>
+      Цена на час:
+      {{ parkingMeta.pricePerHourBgn | number:'1.2-2' }} лв
+      ({{ (parkingMeta.pricePerHourBgn || 0) / BGN_TO_EUR | number:'1.2-2' }} €)
+    </p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onCheckAvailability()">
+
+    <div class="form-group">
+      <label class="required">Начална дата</label>
+      <input type="date" formControlName="startDate">
     </div>
-    <div class="form-item">
-      <label for="startHour">Start Time:</label>
-      <select id="startHour" formControlName="startHour">
-        <option *ngFor="let hour of hours" [value]="hour">{{ hour }}:00</option>
+
+    <div class="form-group">
+      <label class="required">Крайна дата</label>
+      <input type="date" formControlName="endDate">
+    </div>
+
+    <div class="form-group">
+      <label class="required">Начален час</label>
+      <select formControlName="startTime">
+        <option value="" disabled selected>-- избери час --</option>
+        <option *ngFor="let h of hourOptions" [value]="h">
+          {{ h }}
+        </option>
       </select>
-      <div *ngIf="form.controls['startHour'].invalid && (form.controls['startHour'].dirty || form.controls['startHour'].touched)">
-        <small class="error">Start time is required</small>
-      </div>
     </div>
-    <div class="form-item">
-      <label for="endHour">End Time:</label>
-      <select id="endHour" formControlName="endHour">
-        <option *ngFor="let hour of hours" [value]="hour">{{ hour }}:00</option>
+
+    <div class="form-group">
+      <label class="required">Краен час</label>
+      <select formControlName="endTime">
+        <option value="" disabled selected>-- избери час --</option>
+        <option *ngFor="let h of hourOptions" [value]="h">
+          {{ h }}
+        </option>
       </select>
-      <div *ngIf="form.controls['endHour'].invalid && (form.controls['endHour'].dirty || form.controls['endHour'].touched)">
-        <small class="error">End time must be after start time</small>
-      </div>
-      <div *ngIf="form.errors?.['invalidTimeRange']">
-        <small class="error">End time must be after start time</small>
-      </div>
     </div>
-    <div class="form-item">
-      <button type="button" (click)="checkAvailability()" [disabled]="form.invalid">Check Availability</button>
-    </div>
-    <div class="form-item" *ngIf="availabilityMessage">
-      <p>{{ availabilityMessage }}</p>
-      <p *ngIf="totalPrice !== null">Total Price: {{ totalPrice }} BGN</p>
-    </div>
-    <div *ngIf="totalPrice !== null">
-      <div class="form-item">
-        <label>
-          <input type="radio" formControlName="paymentMethod" value="cash" (change)="onPaymentMethodChange('cash')"> Pay on site
-        </label>
-      </div>
-      <div class="form-item">
-        <label>
-          <input type="radio" formControlName="paymentMethod" value="card" (change)="onPaymentMethodChange('card')"> Pay now with card
-        </label>
-      </div>
-    </div>
+
+    <button type="submit" class="btn primary">
+      Провери наличност
+    </button>
+
+    <app-booking-confirm-dialog
+      [visible]="dialogVisible"
+      [data]="dialogData"
+      (confirm)="onDialogConfirm($event)"
+      (cancel)="onDialogCancel()">
+    </app-booking-confirm-dialog>
   </form>
 </div>
-
-
-
-

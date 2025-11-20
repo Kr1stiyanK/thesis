@@ -35,4 +35,24 @@ public interface ParkingBookingRepository extends JpaRepository<ParkingBookingEn
     List<ParkingBookingEntity> findByUser_EmailOrderByStartTimeDesc(String email);
 
     List<ParkingBookingEntity> findByParkingIdOrderByStartTimeDesc(Long parkingId);
+
+    boolean existsByParkingIdAndSpaceNumberAndStartTimeLessThanAndEndTimeGreaterThan(Long id, int space, LocalDateTime end, LocalDateTime start);
+
+    @Query("""
+            SELECT COUNT(b)
+            FROM ParkingBookingEntity b
+            WHERE b.parking.id = :parkingId
+              AND b.startTime <= :now
+              AND b.endTime > :now
+            """)
+    long countActiveBookingsForParking(@Param("parkingId") Long parkingId, @Param("now") LocalDateTime now);
+
+    @Query("""
+                SELECT COUNT(b)
+                FROM ParkingBookingEntity b
+                WHERE b.parking.id = :parkingId
+                  AND b.startTime < :endTime
+                  AND b.endTime > :startTime
+            """)
+    long countOverlappingBookings(Long parkingId, LocalDateTime startTime, LocalDateTime endTime);
 }

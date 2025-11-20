@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { ParkingHome } from '../home/home.component';  // или отделен файл за модела, ако искаш
+import {Component, Input} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router} from '@angular/router';
+import {ParkingHome} from '../home/home.component';  // или отделен файл за модела, ако искаш
 
 @Component({
   selector: 'app-parking-list',
@@ -18,25 +18,46 @@ export class ParkingListComponent {
 
   readonly BGN_TO_EUR = 1.95583;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
   onAction(p: ParkingHome): void {
     if (this.mode === 'admin') {
-      this.router.navigate(['/my-parkings'], { queryParams: { parkingId: p.id } });
-    } else {
-      this.router.navigate(['/scheduler'], {
-        queryParams: { parkingId: p.id }
-      });
+      this.router.navigate(['/my-parkings'], {queryParams: {editId: p.id}});
+      return;
     }
+
+    // USER / GUEST
+    const token = localStorage.getItem('jwtToken');
+
+    if (token) {
+      // логнат → директно към графика
+      this.router.navigate(['/scheduler'], {queryParams: {parkingId: p.id}});
+    } else {
+      // не логнат → към login, но с избрания parkingId
+      this.router.navigate(['/login'], {queryParams: {parkingId: p.id, redirectUrl: '/scheduler'}});
+    }
+    // if (this.mode === 'admin') {
+    //   this.router.navigate(['/my-parkings'], { queryParams: { parkingId: p.id } });
+    // } else {
+    //   this.router.navigate(['/scheduler'], {
+    //     queryParams: { parkingId: p.id }
+    //   });
+    // }
   }
 
   rewardLabel(p: ParkingHome): string {
     switch (p.loyaltyRewardHours) {
-      case 'ONE_HOUR': return '1 час';
-      case 'THREE_HOURS': return '3 часа';
-      case 'SIX_HOURS': return '6 часа';
-      case 'EIGHT_HOURS': return '8 часа';
-      default: return '-';
+      case 'ONE_HOUR':
+        return '1 час';
+      case 'THREE_HOURS':
+        return '3 часа';
+      case 'SIX_HOURS':
+        return '6 часа';
+      case 'EIGHT_HOURS':
+        return '8 часа';
+      default:
+        return '-';
     }
   }
 
@@ -58,7 +79,7 @@ export class ParkingListComponent {
 
   bookHere(p: ParkingHome) {
     this.router.navigate(['/scheduler'], {
-      queryParams: { parkingId: p.id }
+      queryParams: {parkingId: p.id}
     });
   }
 }

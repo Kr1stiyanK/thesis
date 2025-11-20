@@ -109,75 +109,75 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  // onPaymentSubmit() {
-  //   if (this.paymentForm.valid) {
-  //     if (this.isGuestUser) {
-  //       this.ds.quickBooking(this.bookingDetails).subscribe(
-  //         (response) => {
-  //           this.router.navigate(['/booking-success'], {state: {bookingDetails: this.bookingDetails}});
-  //         },
-  //         (error) => {
-  //           alert('Payment failed: ' + error.message);
-  //         }
-  //       );
-  //     } else {
-  //       this.ds.createEvent(this.bookingDetails).subscribe(
-  //         (response) => {
-  //           this.router.navigate(['/scheduler'], {state: {bookingDetails: this.bookingDetails}});
-  //         },
-  //         (error) => {
-  //           alert('Payment failed: ' + error.message);
-  //         }
-  //       );
-  //     }
-  //   }
-  // }
-
   onPaymentSubmit() {
-    if (this.paymentForm.invalid || !this.bookingDetails) {
-      this.paymentForm.markAllAsTouched();
-      return;
-    }
-
-    if (this.isGuestUser) {
-      // GUEST → използваме quickBooking (без spaceNumber)
-      const dto = {
-        parkingId: this.bookingDetails.parkingId,
-        startTime: this.bookingDetails.startTime, // ISO string
-        endTime: this.bookingDetails.endTime
-      };
-
-      this.ds.quickBooking(dto).subscribe({
-        next: (created) => {
-          this.router.navigate(['/booking-success'], {
-            state: {bookingDetails: created}
-          });
-        },
-        error: (error) => {
-          console.error(error);
-          alert('Payment / booking failed: ' + (error.message || 'Unknown error'));
-        }
-      });
-
-    } else {
-      // LOGGED-IN → текущия flow с избрано място
-      const parkingId = this.bookingDetails.parkingId;
-      const dto = {
-        spaceNumber: this.bookingDetails.spaceNumber,
-        startTime: this.bookingDetails.startTime,
-        endTime: this.bookingDetails.endTime,
-        useBonus: this.useBonus && this.canUseBonus
-      };
-
-      this.ds.createParkingBooking(parkingId, dto).subscribe({
-        next: (created) => {
-          this.router.navigate(['/scheduler'], {queryParams: {parkingId}});
-        },
-        error: (error) => {
-          console.error(error);
-          alert('Payment / booking failed: ' + (error.message || 'Unknown error'));
-        }
-      });
+    if (this.paymentForm.valid) {
+      if (this.isGuestUser) {
+        this.ds.quickBooking(this.bookingDetails).subscribe(
+          (response) => {
+            this.router.navigate(['/booking-success'], {state: {bookingDetails: this.bookingDetails}});
+          },
+          (error) => {
+            alert('Payment failed: ' + error.message);
+          }
+        );
+      } else {
+        this.ds.createParkingBooking(this.bookingDetails.parkingId,this.bookingDetails).subscribe(
+          (response) => {
+            this.router.navigate(['/scheduler'], {queryParams: {parkingId: this.bookingDetails.parkingId}});
+          },
+          (error) => {
+            alert('Payment failed: ' + error.message);
+          }
+        );
+      }
     }
   }
+
+  // onPaymentSubmit() {
+  //   if (this.paymentForm.invalid || !this.bookingDetails) {
+  //     this.paymentForm.markAllAsTouched();
+  //     return;
+  //   }
+  //
+  //   if (this.isGuestUser) {
+  //     // GUEST → използваме quickBooking (без spaceNumber)
+  //     const dto = {
+  //       parkingId: this.bookingDetails.parkingId,
+  //       startTime: this.bookingDetails.startTime, // ISO string
+  //       endTime: this.bookingDetails.endTime
+  //     };
+  //
+  //     this.ds.quickBooking(dto).subscribe({
+  //       next: (created) => {
+  //         this.router.navigate(['/booking-success'], {
+  //           state: {bookingDetails: created}
+  //         });
+  //       },
+  //       error: (error) => {
+  //         console.error(error);
+  //         alert('Payment / booking failed: ' + (error.message || 'Unknown error'));
+  //       }
+  //     });
+  //
+  //   } else {
+  //     // LOGGED-IN → текущия flow с избрано място
+  //     const parkingId = this.bookingDetails.parkingId;
+  //     const dto = {
+  //       spaceNumber: this.bookingDetails.spaceNumber,
+  //       startTime: this.bookingDetails.startTime,
+  //       endTime: this.bookingDetails.endTime,
+  //       useBonus: this.useBonus && this.canUseBonus
+  //     };
+  //
+  //     this.ds.createParkingBooking(parkingId, dto).subscribe({
+  //       next: (created) => {
+  //         this.router.navigate(['/scheduler'], {queryParams: {parkingId}});
+  //       },
+  //       error: (error) => {
+  //         console.error(error);
+  //         alert('Payment / booking failed: ' + (error.message || 'Unknown error'));
+  //       }
+  //     });
+  //   }
+  // }
 }

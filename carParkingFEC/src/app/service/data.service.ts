@@ -160,7 +160,7 @@ export class DataService {
 
   getAllProfiles(): Observable<any[]> {
     const headers = DataService.createAuthorizationHeader();
-    return this.http.get<any[]>(BASE_URL + 'api/all-profiles', {headers});
+    return this.http.get<any[]>(BASE_URL + 'api/admin/parkings/all-profiles', {headers});
   }
 
   getAllBookings(): Observable<any[]> {
@@ -226,6 +226,10 @@ export class DataService {
   createParkingBooking(parkingId: number, body: { spaceNumber: number; startTime: string; endTime: string }): Observable<BookingSlot> {
     const headers = DataService.createAuthorizationHeader();
     return this.http.post<BookingSlot>(BASE_URL + `api/parkings/${parkingId}/bookings`, body, { headers });
+  }
+
+  checkQuickBookingAvailability(parkingId: number, startTime: string, endTime: string) {
+    return this.http.post<{ available: boolean }>(BASE_URL + `api/parkings/${parkingId}/bookings/quick-availability`, {parkingId, startTime, endTime});
   }
 
 }

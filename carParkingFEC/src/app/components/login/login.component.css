@@ -42,4 +42,16 @@ label.required::after {
   margin-left: 3px;
 }
 
+.form-group label.required::after {
+  content: " *";
+  color: red;
+  margin-left: 3px;
+}
+
+.guest-btn {
+  margin-left: 10px;
+  background-color: #28a745;
+}
+
+
 

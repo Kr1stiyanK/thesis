@@ -14,8 +14,6 @@ import {ParkingListComponent} from "../parking-list/parking-list.component";
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  freeNow: number | null = null;
-  totalSpots = 20;
   private sub?: Subscription;
   parkings: ParkingHome[] = [];
 
@@ -33,11 +31,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   goToScheduler(p: ParkingHome) {
     this.router.navigate(['/scheduler'], {
-      queryParams: { parkingId: p.id }
+      queryParams: {parkingId: p.id}
     });
   }
 
-  private loadParkings(): void{
+  private loadParkings(): void {
     this.service.getParkingsForHome()
       .subscribe({
         next: data => this.parkings = data,

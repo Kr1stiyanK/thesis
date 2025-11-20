@@ -13,7 +13,7 @@ import {LoyaltySummary} from "../../service/data.service";
 export class BookingConfirmDialogComponent implements OnChanges {
 
   @Input() visible = false;
-  @Input() data!: BookingPreviewData | null;
+  @Input() data: BookingPreviewData | null = null;
 
   @Output() confirm = new EventEmitter<{ paymentMethod: 'cash' | 'card', useBonus: boolean, finalPriceBgn: number }>();
   @Output() cancel = new EventEmitter<void>();
@@ -46,7 +46,6 @@ export class BookingConfirmDialogComponent implements OnChanges {
     return this.data?.loyaltyInfo?.rewardHours ?? 0;
   }
 
-  /** Отстъпка в лева според избран бонус */
   get discountBgn(): number {
     if (!this.useBonus || !this.data || !this.hasBonus) {
       return 0;
@@ -106,4 +105,20 @@ export interface BookingPreviewData {
   cardPaymentEnabled: boolean;
   pricePerHourBgn: number;
   loyaltyInfo?: LoyaltySummary;
+}
+
+export interface QuickBookingPreviewData{
+  parkingName: string;
+  spaceNumber: number;
+  startTime: Date;
+  endTime: Date;
+  totalPrice: number;
+  cardPaymentEnabled: boolean;
+  pricePerHourBgn: number;
+  loyaltyInfo?: LoyaltySummary;
+  spacesCount?: number;
+  open24Hours?: boolean;
+  openingTime?: string;
+  closingTime?: string;
+  pricePerHourEur?: number;
 }

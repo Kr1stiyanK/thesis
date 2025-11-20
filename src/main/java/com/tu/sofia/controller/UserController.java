@@ -1,10 +1,8 @@
 package com.tu.sofia.controller;
 
 import com.tu.sofia.dto.*;
-import com.tu.sofia.model.OrderEntity;
 import com.tu.sofia.model.UserEntity;
 import com.tu.sofia.service.ParkingBookingService;
-import com.tu.sofia.service.ParkingSpaceBookingService;
 import com.tu.sofia.service.UserEntityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

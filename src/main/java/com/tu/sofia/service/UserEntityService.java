@@ -82,7 +82,7 @@ public class UserEntityService implements UserDetailsService {
         this.userRepo.save(userEntity);
     }
 
-    public List<UserEntity> findAllUsers() {
-        return this.userRepo.findAll();
+    public List<UserEntity> findAllNonAdminUsers() {
+        return this.userRepo.findAllNonAdminUsers();
     }
 }

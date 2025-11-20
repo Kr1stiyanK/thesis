@@ -680,12 +680,14 @@ export class SchedulerComponent implements OnInit {
   }
 
   /** Локален LocalDateTime string yyyy-MM-ddTHH:mm:ss */
-  private buildLocalDateTimeString(date: Date, hour: number): string {
+  private buildLocalDateTimeString(date: Date): string {
     const y = date.getFullYear();
     const m = (date.getMonth() + 1).toString().padStart(2, '0');
     const d = date.getDate().toString().padStart(2, '0');
-    const hh = hour.toString().padStart(2, '0');
-    return `${y}-${m}-${d}T${hh}:00:00`;
+    const hh = date.getHours().toString().padStart(2, '0');
+    const mm = date.getMinutes().toString().padStart(2, '0');
+    const ss = date.getSeconds().toString().padStart(2, '0');
+    return `${y}-${m}-${d}T${hh}:${mm}:${ss}`;
   }
 
   // -----------------------------------------------------
@@ -709,7 +711,7 @@ export class SchedulerComponent implements OnInit {
     this.dataService.getParkingScheduleMeta(this.parkingId).subscribe({
       next: meta => {
         this.parkingMeta = meta;
-        this.spaces = Array.from({ length: meta.spacesCount }, (_, i) => i + 1);
+        this.spaces = Array.from({length: meta.spacesCount}, (_, i) => i + 1);
         this.buildTimeSlots();
         this.loadBookings();
       },
@@ -736,10 +738,10 @@ export class SchedulerComponent implements OnInit {
     let endHour = 24;
 
     if (!this.parkingMeta.open24Hours) {
-      const open = this.parkingMeta.openingTime || '08:00:00';
-      const close = this.parkingMeta.closingTime || '20:00:00';
-      startHour = parseInt(open.substring(0, 2), 10);
-      endHour = parseInt(close.substring(0, 2), 10);
+      const open = this.parkingMeta.openingTime;
+      const close = this.parkingMeta.closingTime;
+      startHour = parseInt(open!.substring(0, 2), 10);
+      endHour = parseInt(close!.substring(0, 2), 10);
     }
 
     for (let h = startHour; h < endHour; h++) {
@@ -786,10 +788,8 @@ export class SchedulerComponent implements OnInit {
     const now = new Date();
 
     const today = new Date(now);
-    today.setHours(0, 0, 0, 0);
 
     const slotDay = new Date(slot.start);
-    slotDay.setHours(0, 0, 0, 0);
 
     if (slotDay.getTime() < today.getTime()) {
       return true;
@@ -895,11 +895,8 @@ export class SchedulerComponent implements OnInit {
     const originalTotal = this.calculateTotalPrice(this.pendingStart, this.pendingEnd);
     const effectiveTotal = event.finalPriceBgn ?? originalTotal;
 
-    const startHour = this.pendingStart.getHours();
-    const endHour = this.pendingEnd.getHours();
-
-    const startStr = this.buildLocalDateTimeString(this.selectedDate, startHour);
-    const endStr = this.buildLocalDateTimeString(this.selectedDate, endHour);
+    const startStr = this.buildLocalDateTimeString(this.pendingStart);
+    const endStr = this.buildLocalDateTimeString(this.pendingEnd);
 
     const bookingData: any = {
       parkingId: this.parkingId,

@@ -4,7 +4,7 @@
 
     <div class="dialog-body">
       <p><strong>Паркинг:</strong> {{ data.parkingName }}</p>
-      <p><strong>Паркомясто:</strong> {{ data.spaceNumber }}</p>
+      <p *ngIf="data.spaceNumber"><strong>Паркомясто:</strong> {{ data.spaceNumber }}</p>
       <p>
         <strong>От:</strong>
         {{ formattedTime(data.startTime) }}

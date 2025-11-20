@@ -6,6 +6,7 @@ import com.tu.sofia.model.ParkingEntity;
 import com.tu.sofia.model.UserEntity;
 import com.tu.sofia.repositories.ParkingBookingRepository;
 import com.tu.sofia.repositories.ParkingRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -62,7 +63,7 @@ public class ParkingBookingService {
         ParkingEntity parking = parkingRepo.findById(parkingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking not found"));
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().minusMinutes(3);
 
         if (dto.getStartTime().isBefore(now) || dto.getEndTime().isBefore(now)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot book in the past");
@@ -125,7 +126,6 @@ public class ParkingBookingService {
 
             amount = billableHours.multiply(pricePerHour);
 
-            // Записваме, че потребителят е използвал бонус
             loyaltyService.consumeReward(userId, parkingId);
         }
 
@@ -143,6 +143,80 @@ public class ParkingBookingService {
 
         return toDto(booking);
     }
+
+    public BookingSlotDTO createQuickBooking(QuickBookingDTO request) {
+
+        ParkingEntity parking = parkingRepo.findById(request.getParkingId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Паркингът не е намерен."));
+
+        LocalDateTime now = LocalDateTime.now().minusMinutes(3);
+        LocalDateTime start = request.getStartTime();
+        LocalDateTime end = request.getEndTime();
+
+        if (start == null || end == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Липсва начален или краен час.");
+        }
+
+        if (start.isBefore(now) || end.isBefore(now)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Не може да се резервира в миналото.");
+        }
+
+        if (!end.isAfter(start)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Крайният час трябва да е след началния.");
+        }
+
+        // Работно време
+        if (!Boolean.TRUE.equals(parking.getOpen24Hours())) {
+            LocalTime opening = parking.getOpeningTime();
+            LocalTime closing = parking.getClosingTime();
+
+            if (opening == null || closing == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Работното време на паркинга не е конфигурирано.");
+            }
+
+            LocalTime startT = start.toLocalTime();
+            LocalTime endT = end.toLocalTime();
+
+            if (startT.isBefore(opening) || endT.isAfter(closing)) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        String.format("Паркингът работи между %s и %s.",
+                                opening.toString(), closing.toString())
+                );
+            }
+        }
+
+        // Намираме първо свободно място
+        Integer freeSpace = findFirstFreeSpace(parking, start, end);
+        if (freeSpace == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Няма свободни места за избрания интервал.");
+        }
+
+        CreateBookingDTO dto = new CreateBookingDTO()
+                .setSpaceNumber(freeSpace)
+                .setStartTime(start)
+                .setEndTime(end);
+
+        Long guestUserId = 2L;
+
+        return createBooking(parking.getId(), dto, guestUserId);
+    }
+
+    public boolean hasFreeSpace(Long parkingId, LocalDateTime startTime, LocalDateTime endTime) {
+        ParkingEntity parking = parkingRepo.findById(parkingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking not found"));
+
+        long totalSpaces = parking.getSpacesCount();
+
+        long taken = bookingRepo.countOverlappingBookings(parkingId, startTime, endTime);
+
+        return taken < totalSpaces;
+    }
+
 
     private BookingSlotDTO toDto(ParkingBookingEntity e) {
         return new BookingSlotDTO()
@@ -173,4 +247,18 @@ public class ParkingBookingService {
                 .setAmountBgn(e.getAmountBgn())
                 .setUserEmail(e.getUser() != null ? e.getUser().getEmail() : null);
     }
+
+    private Integer findFirstFreeSpace(ParkingEntity parking, LocalDateTime start, LocalDateTime end) {
+        int spaces = parking.getSpacesCount();
+        for (int space = 1; space <= spaces; space++) {
+
+            boolean hasConflict = bookingRepo.existsByParkingIdAndSpaceNumberAndStartTimeLessThanAndEndTimeGreaterThan(parking.getId(), space, end, start);
+
+            if (!hasConflict) {
+                return space;
+            }
+        }
+        return null;
+    }
+
 }

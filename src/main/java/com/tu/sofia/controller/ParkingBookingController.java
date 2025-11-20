@@ -1,7 +1,9 @@
 package com.tu.sofia.controller;
 
+import com.tu.sofia.dto.AvailabilityResponseDTO;
 import com.tu.sofia.dto.BookingSlotDTO;
 import com.tu.sofia.dto.CreateBookingDTO;
+import com.tu.sofia.dto.QuickBookingDTO;
 import com.tu.sofia.repositories.UserEntityRepository;
 import com.tu.sofia.service.ParkingBookingService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,7 +39,6 @@ public class ParkingBookingController {
             @PathVariable Long parkingId,
             @RequestBody CreateBookingDTO dto) {
         if (principal == null) {
-            // гост – не може useBonus
             dto.setUseBonus(false);
             return bookingService.createBooking(parkingId, dto, null);
         }
@@ -47,5 +48,10 @@ public class ParkingBookingController {
                 .getId();
 
         return bookingService.createBooking(parkingId, dto, userId);
+    }
+
+    @PostMapping("/quick-availability")
+    public AvailabilityResponseDTO checkQuickAvailability(@PathVariable Long parkingId, @RequestBody QuickBookingDTO request) {
+        return new AvailabilityResponseDTO(bookingService.hasFreeSpace(parkingId, request.getStartTime(), request.getEndTime()));
     }
 }

@@ -1,0 +1,99 @@
+.quick-select-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+.quick-select-container h2 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #222;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+  color: #222;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background: #fafafa;
+  font-size: 16px;
+  cursor: pointer;
+  appearance: none;
+  transition: border-color 0.2s;
+}
+
+select:hover {
+  border-color: #8cb9ff;
+}
+
+select:focus {
+  outline: none;
+  border-color: #4d90fe;
+  box-shadow: 0 0 0 3px rgba(77, 144, 254, 0.25);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.btn {
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: #0069ff;
+  color: white;
+}
+
+.btn.primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn.primary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn.secondary {
+  background: #e8e8e8;
+  color: #333;
+}
+
+.btn.secondary:hover {
+  background: #dcdcdc;
+}
+
+.error {
+  padding: 12px;
+  background: #ffe7e7;
+  border: 1px solid #ffb8b8;
+  border-radius: 8px;
+  color: #b10000;
+  margin-bottom: 15px;
+  text-align: center;
+}
