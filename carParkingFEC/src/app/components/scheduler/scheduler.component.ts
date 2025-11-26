@@ -315,7 +315,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       useBonus: event.useBonus
     };
 
-    // 1) Ако крайната цена е 0 → никакво плащане, директно създаваме букинг
+    // 1) If amount == 0 then simply create the reservation
     if (effectiveTotal === 0) {
       this.dataService.createParkingBooking(this.parkingId, bookingData)
         .subscribe({
@@ -333,7 +333,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // 2) Плащане с карта (цена > 0) → към /payment с намалената сума
+    // 2) Card payment with amount > 0
     if (event.paymentMethod === 'card') {
       this.dialogVisible = false;
 
@@ -352,7 +352,7 @@ export class SchedulerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // 3) Плащане в брой (цена > 0)
+    // Cash payment when amount > 0
     this.dataService.createParkingBooking(this.parkingId, bookingData)
       .subscribe({
         next: () => {

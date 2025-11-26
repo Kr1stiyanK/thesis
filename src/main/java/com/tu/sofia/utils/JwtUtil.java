@@ -1,6 +1,7 @@
 package com.tu.sofia.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -82,12 +83,17 @@ public class JwtUtil {
     }
 
     public String refreshJwtToken(String token) {
-        Claims claims = extractAllClaims(token);
+        Claims claims;
+        try {
+            claims = extractAllClaims(token);
+        } catch (ExpiredJwtException e) {
+            claims = e.getClaims();
+        }
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(claims.getSubject())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 600)) // 10 часа
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 часа
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

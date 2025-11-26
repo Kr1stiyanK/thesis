@@ -1,6 +1,6 @@
 <div class="scheduler-page"
      *ngIf="!error; else errorTpl"
-     [class.scheduler-24h]="parkingMeta!.open24Hours">
+     [class.scheduler-24h]="parkingMeta.open24Hours">
 
   <div class="scheduler-header" *ngIf="parkingMeta">
     <h2>{{ parkingMeta.name }}</h2>
