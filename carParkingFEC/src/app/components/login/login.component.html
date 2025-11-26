@@ -1,34 +1,3 @@
-<!--<div class="container">-->
-<!--  <h2>Login</h2>-->
-<!--  <form [formGroup]="loginForm" (ngSubmit)="submitForm()">-->
-<!--    <div class="form-group">-->
-<!--      <label for="email" class="required">Email</label>-->
-<!--      <input type="email" class="form-control" id="email" formControlName="email"/>-->
-<!--    </div>-->
-
-<!--    <div class="form-group">-->
-<!--      <label for="password" class="required">Password</label>-->
-<!--      <input type="password" class="form-control" id="password" formControlName="password"/>-->
-<!--    </div>-->
-
-<!--    <button type="submit" class="btn" [class.active]="!loginForm.invalid" [disabled]="loginForm.invalid">-->
-<!--      Login-->
-<!--    </button>-->
-<!--  </form>-->
-
-<!--  <button [routerLink]="['/home']" class="btn home-btn">Home</button>-->
-
-<!--  <div class="google-login-container">-->
-<!--    <button class="google-login-btn" (click)="loginWithGoogle()">-->
-<!--&lt;!&ndash;      <img src="assets/Google-G-logo.svg" alt="Google Logo" class="google-logo"/>&ndash;&gt;-->
-<!--      <span>Бърза резервация</span>-->
-<!--    </button>-->
-<!--  </div>-->
-
-<!--  <div class="forgot-password">-->
-<!--    <a [routerLink]="['/forgot-password']">Forgotten Password?</a>-->
-<!--  </div>-->
-<!--</div>-->
 <div class="container">
   <h2>Вход</h2>
 
@@ -52,7 +21,6 @@
     </button>
   </form>
 
-  <!-- Бърза резервация като гост -->
   <button type="button" class="btn guest-btn" (click)="goToQuickBooking()">
     Бърза резервация (гост)
   </button>

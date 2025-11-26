@@ -27,23 +27,13 @@ export class ParkingListComponent {
       return;
     }
 
-    // USER / GUEST
     const token = localStorage.getItem('jwtToken');
 
     if (token) {
-      // логнат → директно към графика
       this.router.navigate(['/scheduler'], {queryParams: {parkingId: p.id}});
     } else {
-      // не логнат → към login, но с избрания parkingId
       this.router.navigate(['/login'], {queryParams: {parkingId: p.id, redirectUrl: '/scheduler'}});
     }
-    // if (this.mode === 'admin') {
-    //   this.router.navigate(['/my-parkings'], { queryParams: { parkingId: p.id } });
-    // } else {
-    //   this.router.navigate(['/scheduler'], {
-    //     queryParams: { parkingId: p.id }
-    //   });
-    // }
   }
 
   rewardLabel(p: ParkingHome): string {

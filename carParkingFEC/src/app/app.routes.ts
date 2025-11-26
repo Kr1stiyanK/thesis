@@ -13,12 +13,10 @@ import {BookingSuccessComponent} from "./components/booking-success/booking-succ
 import {AllprofilesComponent} from "./components/allprofiles/allprofiles.component";
 import {AllbookingsComponent} from "./components/allbookings/allbookings.component";
 import {PaymentEditComponent} from "./components/payment-edit/payment-edit.component";
-import {MapComponent} from "./components/map/map.component";
 import {ForgotpasswordComponent} from "./components/forgotpassword/forgotpassword.component";
 import {ResetpasswordComponent} from "./components/resetpassword/resetpassword.component";
 import {AdminParkingsComponent} from "./components/admin-parkings/admin-parkings.component";
 import {LoyaltyPointsComponent} from "./components/loyalty-points/loyalty-points.component";
-import {ParkingBookingsComponent} from "./components/parkingbookings/parking-bookings.component";
 import {QuickBookingSelectComponent} from "./components/quick-booking-select/quick-booking-select.component";
 import {AppActivateAccountComponent} from "./components/app-activate-account/app-activate-account.component";
 
@@ -35,7 +33,6 @@ export const routes: Routes = [
   {path: 'profile-edit', component: ProfileEditComponent, canActivate: [AuthGuard]},
   {path: 'my-bookings', component: MybookingsComponent, canActivate: [AuthGuard]},
   {path: 'scheduler', component: SchedulerComponent, canActivate: [AuthGuard]},
-  {path: 'map', component: MapComponent, canActivate: [AuthGuard]},
   {path: 'all-profiles', component: AllprofilesComponent, canActivate: [AuthGuard]},
   {path: 'all-bookings', component: AllbookingsComponent, canActivate: [AuthGuard]},
   {path: 'my-parkings', component: AdminParkingsComponent, canActivate: [AuthGuard]},
@@ -44,7 +41,6 @@ export const routes: Routes = [
   {path: 'reset-password', component: ResetpasswordComponent},
   {path: 'payment-edit', component: PaymentEditComponent},
   {path: 'loyalty', component: LoyaltyPointsComponent, canActivate: [AuthGuard]},
-  {path: 'parking-bookings', component: ParkingBookingsComponent, canActivate: [AuthGuard]},
   {path: '', redirectTo: '', pathMatch: 'full'},
   {path: '**', redirectTo: ''},
 ];

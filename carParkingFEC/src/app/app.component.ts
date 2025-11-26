@@ -6,8 +6,6 @@ import {HttpClientModule} from "@angular/common/http";
 import {SchedulerComponent} from "./components/scheduler/scheduler.component";
 import {LoginComponent} from "./components/login/login.component";
 import {RegisterComponent} from "./components/register/register.component";
-import {CreateComponent} from "./components/create/create.component";
-import {EditComponent} from "./components/edit/edit.component";
 import {PaymentComponent} from "./components/payment/payment.component";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {ProfileEditComponent} from "./components/profile-edit/profile-edit.component";
@@ -26,7 +24,7 @@ import {filter} from "rxjs";
   standalone: true,
   imports: [RouterOutlet, CommonModule, HomeComponent, RouterLink,
     RouterLinkActive, HttpClientModule, SchedulerComponent, LoginComponent,
-    RegisterComponent, CreateComponent, EditComponent, PaymentComponent,
+    RegisterComponent, PaymentComponent,
     ProfileComponent, ProfileEditComponent, MybookingsComponent, QuickBookingComponent,
     BookingSuccessComponent, AllbookingsComponent, AllprofilesComponent, ForgotpasswordComponent, ResetpasswordComponent
   ],

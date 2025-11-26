@@ -34,40 +34,6 @@ export class LoginComponent implements OnInit {
     this.parkingIdFromHome = pid ? Number(pid) : null;
   }
 
-  // submitForm() {
-  //   this.service.login(this.loginForm.value).subscribe(
-  //     (response) => {
-  //       if (response.jwtToken != null) {
-  //         const jwtToken = response.jwtToken;
-  //         localStorage.setItem('jwtToken', jwtToken);
-  //
-  //         const target = this.redirectUrl || '/profile';
-  //         this.router.navigate([target],{queryParams: {parkingId: this.parkingIdFromHome}});
-  //       }
-  //     },
-  //     (error) => {
-  //       alert('Login failed: ' + error.message);
-  //     }
-  //   );
-  //
-  //
-  //   this.service.login(this.loginForm.value).subscribe({
-  //     next: () => {
-  //       // ако сме дошли от "Резервирай тук" → директно към графика на този паркинг
-  //       if (this.parkingIdFromHome) {
-  //         this.router.navigate(['/scheduler'], {
-  //           queryParams: {parkingId: this.parkingIdFromHome}
-  //         });
-  //       } else {
-  //         this.router.navigate(['/profile']);
-  //       }
-  //     },
-  //     error: err => {
-  //       console.error(err);
-  //       alert('Грешка при вход.');
-  //     }
-  //   });
-  // }
   submitForm() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
