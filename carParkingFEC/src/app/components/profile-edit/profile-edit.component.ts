@@ -49,12 +49,12 @@ export class ProfileEditComponent implements OnInit {
     if (this.profileForm.valid) {
       this.service.changeEmail(this.profileForm.value).subscribe(
         (response: any) => {
-          alert('Email updated successfully. Please log in with your new email.');
+          alert('Имейлът е променен успешно. Моля, влез с новия имейл.');
           this.service.logout();
           this.router.navigate(['/login']);
         },
         (error: any) => {
-          alert('Failed to update email: ' + error.message);
+          alert('Неуспешна смяна на имейл: ' + error.message);
         }
       );
     }
@@ -70,12 +70,12 @@ export class ProfileEditComponent implements OnInit {
       };
       this.service.changePassword(passwordData).subscribe(
         (response: any) => {
-          alert('Password changed successfully. Please log in with your new password.');
+          alert('Паролата е променена успешно. Моля, влез с новата парола.');
           this.service.logout();
           this.router.navigate(['/login']);
         },
         (error: any) => {
-          alert('Failed to change password: ' + error.message);
+          alert('Неуспешна смяна на парола: ' + error.message);
         }
       );
     }

@@ -127,4 +127,17 @@ public class UserController {
         verification.setUsed(true);
         tokenRepo.save(verification);
     }
+
+    @PostMapping("/forgotten-password")
+    public ResponseEntity<Void> requestPasswordReset(@RequestBody ForgottenPasswordRequestDTO request) {
+        userEntityService.requestPasswordReset(request.getEmail());
+        // винаги 200 → да не издава дали имейлът съществува
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequestDTO request) {
+        userEntityService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
 }

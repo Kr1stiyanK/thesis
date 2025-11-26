@@ -11,6 +11,8 @@ import java.util.List;
 public interface ParkingBookingRepository extends JpaRepository<ParkingBookingEntity, Long> {
     List<ParkingBookingEntity> findByParkingIdAndStartTimeBetween(Long parkingId, LocalDateTime dayStart, LocalDateTime dayEnd);
 
+    List<ParkingBookingEntity> findByParkingIdAndEndTimeAfterAndStartTimeBefore(Long parkingId, LocalDateTime dayStart, LocalDateTime dayEnd);
+
     List<ParkingBookingEntity> findByParkingIdAndSpaceNumberAndStartTimeLessThanAndEndTimeGreaterThan(
             Long parkingId,
             Integer spaceNumber,

@@ -1,4 +1,6 @@
-<div class="scheduler-page" *ngIf="!error; else errorTpl">
+<div class="scheduler-page"
+     *ngIf="!error; else errorTpl"
+     [class.scheduler-24h]="parkingMeta!.open24Hours">
 
   <div class="scheduler-header" *ngIf="parkingMeta">
     <h2>{{ parkingMeta.name }}</h2>
@@ -51,14 +53,20 @@
             [class.selected]="isSelected(space, i)"
             (click)="onSlotClick(space, slot, i)">
 
-          <ng-container *ngIf="isBooked(space, slot); else freeTpl">
-            Заето
-          </ng-container>
+          <span class="cell-label">
+            <ng-container *ngIf="isBooked(space, slot); else notBooked">
+              Заето
+            </ng-container>
 
-          <ng-template #freeTpl>
-            <span *ngIf="isPast(slot)">Минало</span>
-            <span *ngIf="!isPast(slot)">Свободно</span>
-          </ng-template>
+            <ng-template #notBooked>
+              <ng-container *ngIf="isPast(slot); else freeNow">
+                Мин.
+              </ng-container>
+              <ng-template #freeNow>
+                Своб.
+              </ng-template>
+            </ng-template>
+          </span>
 
         </td>
       </tr>
@@ -73,7 +81,6 @@
     (confirm)="onDialogConfirm($event)"
     (cancel)="onDialogCancel()">
   </app-booking-confirm-dialog>
-
 
 </div>
 

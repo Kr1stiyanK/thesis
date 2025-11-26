@@ -29,18 +29,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  goToScheduler(p: ParkingHome) {
-    this.router.navigate(['/scheduler'], {
-      queryParams: {parkingId: p.id}
-    });
-  }
-
   private loadParkings(): void {
-    this.service.getParkingsForHome()
-      .subscribe({
-        next: data => this.parkings = data,
-        error: err => console.error('Error loading parkings', err)
-      });
+    this.sub = timer(0, 15000).pipe(
+      switchMap(() => this.service.getParkingsForHome())
+    ).subscribe({
+      next: data => this.parkings = data,
+      error: err => console.error('Грешка при зареждане на паркингите', err)
+    });
   }
 
 

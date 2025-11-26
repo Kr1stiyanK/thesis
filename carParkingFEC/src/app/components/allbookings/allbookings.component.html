@@ -44,7 +44,7 @@
       <td>{{ i + 1 }}</td>
       <td>{{ b.parkingName }}</td>
       <td>{{ b.spaceNumber }}</td>
-      <td>{{ b.userEmail || '-' }}</td>
+      <td>{{ b.userEmail || 'Гост потребител' }}</td>
       <td>{{ b.startTime | date:'dd.MM.yyyy HH:mm' }}</td>
       <td>{{ b.endTime   | date:'dd.MM.yyyy HH:mm' }}</td>
       <td>{{ (b.amountBgn ?? 0) | number:'1.2-2' }}</td>

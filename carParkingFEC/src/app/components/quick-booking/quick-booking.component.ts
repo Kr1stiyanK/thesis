@@ -123,7 +123,7 @@ export class QuickBookingComponent implements OnInit {
 
     // 1) начало трябва да е преди края
     if (start >= end) {
-      alert('Крайният час трябва да е след началния.');
+      alert('Крайният час/дата трябва да е след началния.');
       return;
     }
 

@@ -1,8 +1,11 @@
 package com.tu.sofia.service;
 
 import com.tu.sofia.model.UserEntity;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,5 +40,35 @@ public class MailService {
         message.setText(text);
 
         mailSender.send(message);
+    }
+
+    public void sendPasswordResetEmail(UserEntity user, String token) {
+        String resetLink = frontEndBaseUrl + "/reset-password?token=" + token;
+
+        String subject = "Смяна на парола в ParkWise";
+        String text = String.format(
+                """
+                        Здравей, %s,
+                        
+                        Получихме заявка за смяна на паролата в ParkWise.
+                        За да зададеш нова парола, отвори този линк (валиден е 15 минути):
+                        
+                        %s
+                        
+                        Ако ти не си направил тази заявка, игнорирай този имейл.
+                        """,
+                user.getName(), resetLink
+        );
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+            helper.setTo(user.getEmail());
+            helper.setSubject(subject);
+            helper.setText(text, false);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Неуспешно изпращане на имейл за смяна на парола.", e);
+        }
     }
 }

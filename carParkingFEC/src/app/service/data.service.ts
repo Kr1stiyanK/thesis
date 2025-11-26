@@ -122,12 +122,12 @@ export class DataService {
     return this.http.put(BASE_URL + 'api/change-password', passwordData, {headers});
   }
 
-  requestPasswordReset(email: string): Observable<any> {
-    return this.http.post(BASE_URL + 'api/forgotten-password', email);
+  requestPasswordReset(email: string) {
+    return this.http.post<void>(BASE_URL + 'api/forgotten-password', {email});
   }
 
   resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(BASE_URL + 'api/reset-password', {token, newPassword}, {responseType: 'text'});
+    return this.http.post(BASE_URL + 'api/reset-password', {token, newPassword});
   }
 
   getMyBookings(email: string): Observable<any[]> {
